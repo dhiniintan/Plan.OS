@@ -1,0 +1,2544 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#181A1F" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Plan.os — Personal Command Center Pelajar & OSIS</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter for Editorial UI/UX Clarity -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            stoneCanvas: '#F3F1ED',
+            taupeCard: '#CFC6B8',
+            taupeDark: '#26231F',
+            obsidian: '#181A1F',
+            solar: '#FFD43B',
+            coral: '#FF5E3A',
+            slateTeal: '#4A6B7C',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    h1, h2, h3, .font-display {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Soft Glowing Bubbles inspired by Be.run Hero Card */
+    .bubble-yellow {
+      background: radial-gradient(circle at 35% 35%, #FFE875 0%, #FFD43B 60%, #F5B82E 100%);
+      box-shadow: 0 12px 32px rgba(255, 212, 59, 0.45), inset 0 2px 8px rgba(255, 255, 255, 0.65);
+    }
+    .bubble-coral {
+      background: radial-gradient(circle at 35% 35%, #FF8A70 0%, #FF5E3A 65%, #E04322 100%);
+      box-shadow: 0 10px 26px rgba(255, 94, 58, 0.42), inset 0 2px 6px rgba(255, 255, 255, 0.45);
+    }
+    .bubble-obsidian {
+      background: radial-gradient(circle at 30% 30%, #343842 0%, #181A1F 75%, #101114 100%);
+      box-shadow: 0 10px 24px rgba(24, 26, 31, 0.35), inset 0 1px 4px rgba(255, 255, 255, 0.18);
+    }
+
+    /* Smooth Modal & Drawer Animations */
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0.6; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-slide-up {
+      animation: slideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.2s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-[#E6E2DA] dark:bg-[#0D0E11] text-[#181A1F] dark:text-[#F4F2EE] transition-colors duration-200 min-h-screen">
+
+  <!-- Outer App Frame (Responsive: Mobile-First Full Width, Tablet/Desktop Centered Bento Shell) -->
+  <div class="max-w-5xl mx-auto min-h-screen md:py-5 md:px-4 flex flex-col">
+    <div class="flex-1 bg-stoneCanvas dark:bg-[#141519] md:rounded-[34px] shadow-2xl border border-white/60 dark:border-stone-800/80 flex flex-col md:flex-row overflow-hidden relative pb-24 md:pb-6">
+
+      <!-- DESKTOP / TABLET LEFT FLOATING RAIL (Inspired by Image 1 Left Pill Navigation) -->
+      <aside class="hidden md:flex flex-col items-center justify-between py-6 px-4 border-r border-stone-200/70 dark:border-stone-800/70 bg-[#ECE9E2]/60 dark:bg-[#111216]/60 w-24 flex-shrink-0">
+        <!-- Brand Mark -->
+        <button onclick="switchTab('today')" class="flex flex-col items-center gap-1 group">
+          <div class="w-11 h-11 rounded-2xl bg-obsidian dark:bg-solar text-solar dark:text-obsidian flex items-center justify-center font-display font-extrabold text-lg shadow-md group-hover:scale-105 transition">
+            ▲
+          </div>
+          <span class="text-[11px] font-display font-extrabold tracking-tight text-obsidian dark:text-white">Plan.os</span>
+        </button>
+
+        <!-- Vertical Pill Nav Group -->
+        <div class="bg-white dark:bg-[#1C1E24] p-2 rounded-full shadow-sm border border-stone-200/60 dark:border-stone-800 flex flex-col gap-3">
+          <button onclick="switchTab('today')" data-nav="today" title="Dashboard Utama" class="desk-nav w-11 h-11 rounded-full flex items-center justify-center transition bg-obsidian text-solar shadow-md">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          </button>
+          <button onclick="switchTab('tasks')" data-nav="tasks" title="Daftar Tugas & Subtask" class="desk-nav w-11 h-11 rounded-full flex items-center justify-center transition text-stone-400 hover:text-obsidian dark:hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          </button>
+          <button onclick="switchTab('calendar')" data-nav="calendar" title="Kalender & Jadwal" class="desk-nav w-11 h-11 rounded-full flex items-center justify-center transition text-stone-400 hover:text-obsidian dark:hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          </button>
+          <button onclick="switchTab('lessons')" data-nav="lessons" title="Tracker Materi Pelajaran" class="desk-nav w-11 h-11 rounded-full flex items-center justify-center transition text-stone-400 hover:text-obsidian dark:hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          </button>
+        </div>
+        <!-- Bottom Utility Pill (Reminders & GitHub Gist Cloud Sync) -->
+        <div class="bg-white dark:bg-[#1C1E24] p-2 rounded-full shadow-sm border border-stone-200/60 dark:border-stone-800 flex flex-col gap-2.5">
+          <button onclick="openRemindersModal()" title="Pengingat Deadline" class="relative w-10 h-10 rounded-full flex items-center justify-center text-stone-500 hover:text-obsidian dark:hover:text-white transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span class="reminder-dot absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-coral ring-2 ring-white dark:ring-[#1C1E24]"></span>
+          </button>
+          <button onclick="openCloudSyncModal()" title="Cloud Sync (GitHub Gist) & Backup" class="relative w-10 h-10 rounded-full flex items-center justify-center text-stone-500 hover:text-obsidian dark:hover:text-white transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+            <span id="desk-sync-dot" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-stone-400 ring-2 ring-white dark:ring-[#1C1E24]"></span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT WORKSPACE -->
+      <div class="flex-1 flex flex-col min-w-0">
+
+        <!-- TOP EDITORIAL HEADER BAR (Fusing Image 1 Greeting + Image 2 Pill Search & Theme Switch) -->
+        <header class="sticky top-0 z-20 bg-stoneCanvas/90 dark:bg-[#141519]/90 backdrop-blur-md px-4 md:px-7 pt-4 pb-3 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <!-- Mobile Brand Badge -->
+            <div class="md:hidden w-10 h-10 rounded-2xl bg-obsidian dark:bg-solar text-solar dark:text-obsidian flex items-center justify-center font-display font-extrabold text-base shadow-sm">
+              ▲
+            </div>
+            <div>
+              <h1 class="text-xl md:text-2xl font-display font-extrabold tracking-tight text-obsidian dark:text-white">
+                Halo, Semangat!
+              </h1>
+              <p id="header-date-subtitle" class="text-xs text-stone-500 dark:text-stone-400 font-medium">
+                Memuat tanggal hari ini...
+              </p>
+            </div>
+          </div>
+
+          <!-- Right Controls: Pill Search + Theme Toggle Switch + Dark Pill Action CTA -->
+          <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+            <!-- Pill Search (Inspired by Image 1 & 2) -->
+            <div class="relative flex-1 md:w-56">
+              <input
+                type="text"
+                id="global-search-input"
+                value=""
+                oninput="handleGlobalSearch(this.value)"
+                placeholder="Cari tugas, mapel, OSIS..."
+                class="w-full pl-9 pr-3 py-2 rounded-full bg-white dark:bg-[#1C1E24] border border-stone-200/80 dark:border-stone-800 text-xs font-medium placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-obsidian dark:focus:ring-solar shadow-2xs"
+              />
+              <svg class="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+
+            <!-- Pill Theme Switch (Inspired by Image 2 Top-Right Switch) -->
+            <!-- Mobile Bell & Cloud Sync quick triggers -->
+            <button onclick="openRemindersModal()" aria-label="Pengingat" class="md:hidden relative w-9 h-9 rounded-full bg-white dark:bg-[#1C1E24] border border-stone-200/80 dark:border-stone-800 flex items-center justify-center text-stone-600 dark:text-stone-300">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+              <span class="reminder-dot absolute top-1 right-1.5 w-2 h-2 rounded-full bg-coral"></span>
+            </button>
+
+            <button onclick="openCloudSyncModal()" aria-label="Cloud Sync GitHub Gist" class="md:hidden relative w-9 h-9 rounded-full bg-white dark:bg-[#1C1E24] border border-stone-200/80 dark:border-stone-800 flex items-center justify-center text-stone-600 dark:text-stone-300">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+              <span id="mob-sync-dot" class="absolute top-1 right-1.5 w-2 h-2 rounded-full bg-stone-400"></span>
+            </button>
+
+            <!-- Primary Dark Pill CTA ("+ Catat" inspired by Image 1's "Upgrade" Pill) -->
+            <button onclick="openQuickAddModal('task')" class="px-4 py-2 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-display font-bold shadow-md hover:opacity-90 active:scale-95 transition flex items-center gap-1.5 whitespace-nowrap">
+              <span>+</span>
+              <span>Catat</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- DYNAMIC BENTO VIEWPORT -->
+        <main id="main-content" class="flex-1 px-4 md:px-7 pt-2 pb-6 space-y-5">
+          <!-- Rendered by JS -->
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE FLOATING PILL BOTTOM NAVIGATION BAR (Thumb-Friendly) -->
+  <nav class="md:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-30 bg-white/95 dark:bg-[#1C1E24]/95 backdrop-blur-md px-3 py-2 rounded-full shadow-xl border border-stone-200/80 dark:border-stone-800 flex items-center gap-2">
+    <button onclick="switchTab('today')" data-nav="today" class="mob-nav px-3.5 py-2 rounded-full flex items-center gap-1.5 bg-obsidian text-solar text-xs font-bold transition">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span class="nav-label">Beranda</span>
+    </button>
+
+    <button onclick="switchTab('tasks')" data-nav="tasks" class="mob-nav p-2.5 rounded-full flex items-center gap-1.5 text-stone-400 text-xs font-bold transition">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+      <span class="nav-label hidden">Tugas</span>
+    </button>
+
+    <!-- Center Quick Add Trigger -->
+    <button onclick="openQuickAddModal('task')" aria-label="Tambah Cepat" class="w-10 h-10 rounded-full bg-coral text-white flex items-center justify-center shadow-md shadow-coral/30 active:scale-90 transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+    </button>
+
+    <button onclick="switchTab('calendar')" data-nav="calendar" class="mob-nav p-2.5 rounded-full flex items-center gap-1.5 text-stone-400 text-xs font-bold transition">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      <span class="nav-label hidden">Jadwal</span>
+    </button>
+
+    <button onclick="switchTab('lessons')" data-nav="lessons" class="mob-nav p-2.5 rounded-full flex items-center gap-1.5 text-stone-400 text-xs font-bold transition">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      <span class="nav-label hidden">Materi</span>
+    </button>
+  </nav>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 pointer-events-none w-full max-w-sm px-4 flex flex-col items-center gap-2"></div>
+
+  <!-- Modal & Bottom Sheet Container -->
+  <div id="modal-root"></div>
+
+  <script>
+    /**
+     * ============================================================================
+     * DYNAMIC SYSTEM DATE HELPERS (NO HARDCODED DATES)
+     * ============================================================================
+     */
+    function getLocalTodayStr() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function addDaysToStr(baseStr, offsetDays) {
+      const [y, m, d] = baseStr.split('-').map(Number);
+      const dt = new Date(y, m - 1, d + offsetDays);
+      return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+    }
+
+    const TODAY_STR = getLocalTodayStr();
+    const NOW_OBJ = new Date();
+
+    const MONTH_NAMES_ID = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    const MONTH_SHORT_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const DAY_NAMES_FULL_ID = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const DAY_NAMES_SHORT_ID = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+
+    function formatHeaderFullDate(dateStr) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      return `${DAY_NAMES_FULL_ID[dt.getDay()]}, ${d} ${MONTH_SHORT_ID[m - 1]} ${y}`;
+    }
+
+    /**
+     * ============================================================================
+     * STRUCTURED APPLICATION STATE & GITHUB GIST CLOUD CONFIG
+     * ============================================================================
+     */
+    const CATEGORY_STYLES = {
+      'Sekolah': {
+        emoji: '📘',
+        pill: 'bg-[#E6EEF2] dark:bg-slate-800 text-[#2E5063] dark:text-sky-300',
+        barColor: '#4A6B7C',
+        dot: 'bg-[#4A6B7C]'
+      },
+      'OSIS': {
+        emoji: '🟠',
+        pill: 'bg-[#FDECE7] dark:bg-orange-950/60 text-[#C93B1B] dark:text-orange-300',
+        barColor: '#FF5E3A',
+        dot: 'bg-coral'
+      },
+      'Project': {
+        emoji: '🟡',
+        pill: 'bg-[#FEF6D8] dark:bg-amber-950/60 text-[#8F6B00] dark:text-amber-300',
+        barColor: '#EAB308',
+        dot: 'bg-solar'
+      },
+      'Rutin': {
+        emoji: '🌿',
+        pill: 'bg-[#E7F2EC] dark:bg-emerald-950/60 text-[#256343] dark:text-emerald-300',
+        barColor: '#2E7D5B',
+        dot: 'bg-emerald-600'
+      }
+    };
+
+    const PRIORITY_STYLES = {
+      'Tinggi': { label: 'Prioritas Tinggi', badge: 'bg-[#FDECE7] dark:bg-rose-950/70 text-[#C93B1B] dark:text-rose-300', weight: 3 },
+      'Sedang': { label: 'Sedang', badge: 'bg-[#FEF6D8] dark:bg-amber-950/70 text-[#8F6B00] dark:text-amber-300', weight: 2 },
+      'Rendah': { label: 'Santai', badge: 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300', weight: 1 }
+    };
+
+    function getInitialUrlGistId() {
+      try {
+        return new URLSearchParams(window.location.search).get('gist_id') || '';
+      } catch (e) {
+        return '';
+      }
+    }
+
+    const state = {
+      currentTab: 'today',
+      selectedCalendarDate: TODAY_STR,
+      calendarYear: NOW_OBJ.getFullYear(),
+      calendarMonth: NOW_OBJ.getMonth(), // 0-11
+      dailyFocusGoal: 5,
+      focusHoursToday: 3.5,
+      taskFilterCategory: 'Semua',
+      taskFilterStatus: 'active',
+      searchQuery: '',
+      notifiedTaskIds: [],
+
+      // GitHub Gist API Cloud Sync State (Zero localStorage)
+      gist: {
+        token: '',
+        gistId: getInitialUrlGistId(),
+        filename: 'plan_os_data.json',
+        autoSync: true,
+        status: 'offline', // 'offline' | 'syncing' | 'synced' | 'error'
+        lastSyncedAt: '',
+        lastError: ''
+      },
+
+      tasks: [
+        {
+          id: 't1',
+          title: 'Proposal & Rundown Classmeet',
+          category: 'OSIS',
+          priority: 'Tinggi',
+          deadlineDate: addDaysToStr(TODAY_STR, 1),
+          deadlineTime: '15:00',
+          reminder: '1 hari sebelum',
+          notes: 'Minta tanda tangan pembina OSIS sebelum jam 3 sore di ruang guru.',
+          completed: false,
+          subtasks: [
+            { id: 's1', text: 'Buat konsep lomba antar kelas', done: true },
+            { id: 's2', text: 'Hitung estimasi anggaran hadiah', done: true },
+            { id: 's3', text: 'Susun jadwal pertandingan per jam', done: false },
+            { id: 's4', text: 'Revisi bareng ketua panitia', done: false }
+          ]
+        },
+        {
+          id: 't2',
+          title: 'Latihan Soal Fisika Dinamika Rotasi',
+          category: 'Sekolah',
+          priority: 'Sedang',
+          deadlineDate: TODAY_STR,
+          deadlineTime: '21:00',
+          reminder: '1 jam sebelum',
+          notes: 'Kerjakan LKS halaman 42 nomor 1 sampai 10 beserta caranya.',
+          completed: false,
+          subtasks: [
+            { id: 's5', text: 'Rangkum rumus momen inersia', done: true },
+            { id: 's6', text: 'Kerjakan soal nomor 1–5', done: false },
+            { id: 's7', text: 'Kerjakan soal nomor 6–10', done: false }
+          ]
+        },
+        {
+          id: 't3',
+          title: 'Push Fitur Tracker ke Repo Lomba',
+          category: 'Project',
+          priority: 'Rendah',
+          deadlineDate: TODAY_STR,
+          deadlineTime: '19:30',
+          reminder: 'Tanpa pengingat',
+          notes: 'Pastikan tampilan mobile responsif sudah dicek.',
+          completed: true,
+          subtasks: [
+            { id: 's8', text: 'Rapikan komponen navigasi', done: true },
+            { id: 's9', text: 'Update README dokumentasi', done: true }
+          ]
+        },
+        {
+          id: 't4',
+          title: 'Makalah Sejarah Bab 4',
+          category: 'Sekolah',
+          priority: 'Sedang',
+          deadlineDate: addDaysToStr(TODAY_STR, 4),
+          deadlineTime: '07:00',
+          reminder: '1 hari sebelum',
+          notes: 'Format PDF dan cetak jilid mika bening.',
+          completed: false,
+          subtasks: [
+            { id: 's10', text: 'Cari referensi jurnal sejarah', done: true },
+            { id: 's11', text: 'Tulis Bab 1 & Bab 2', done: true },
+            { id: 's12', text: 'Tulis kesimpulan & daftar pustaka', done: false }
+          ]
+        },
+        {
+          id: 't5',
+          title: 'Evaluasi Piket Kebersihan Mingguan',
+          category: 'Rutin',
+          priority: 'Rendah',
+          deadlineDate: addDaysToStr(TODAY_STR, 2),
+          deadlineTime: '14:00',
+          reminder: '1 jam sebelum',
+          notes: 'Rekap laporan dari tiap ketua kelas.',
+          completed: false,
+          subtasks: []
+        },
+        {
+          id: 't6',
+          title: 'Ringkasan Integral Tak Tentu',
+          category: 'Sekolah',
+          priority: 'Rendah',
+          deadlineDate: addDaysToStr(TODAY_STR, -1),
+          deadlineTime: '20:00',
+          reminder: 'Tanpa pengingat',
+          notes: 'Sudah dikumpulkan ke Google Classroom.',
+          completed: true,
+          subtasks: []
+        }
+      ],
+
+      schedules: [
+        {
+          id: 'sch1',
+          title: 'KBM Reguler Sekolah',
+          category: 'Sekolah',
+          date: TODAY_STR,
+          startTime: '07:00',
+          endTime: '14:30',
+          location: 'Matematika, Fisika, B. Indonesia'
+        },
+        {
+          id: 'sch2',
+          title: 'Rapat Koordinasi OSIS',
+          category: 'OSIS',
+          date: TODAY_STR,
+          startTime: '15:30',
+          endTime: '17:00',
+          location: 'Ruang OSIS • Bahas Classmeet'
+        },
+        {
+          id: 'sch3',
+          title: 'KBM & Praktikum Kimia',
+          category: 'Sekolah',
+          date: addDaysToStr(TODAY_STR, 1),
+          startTime: '07:00',
+          endTime: '14:30',
+          location: 'Lab IPA Lantai 2'
+        },
+        {
+          id: 'sch4',
+          title: 'Technical Meeting Classmeet',
+          category: 'OSIS',
+          date: addDaysToStr(TODAY_STR, 2),
+          startTime: '15:00',
+          endTime: '16:30',
+          location: 'Aula Sekolah'
+        },
+        {
+          id: 'sch5',
+          title: 'Sprint Coding Project Pribadi',
+          category: 'Project',
+          date: addDaysToStr(TODAY_STR, 5),
+          startTime: '09:00',
+          endTime: '11:30',
+          location: 'Rumah • Belajar UI/UX & API'
+        }
+      ],
+
+      subjects: [
+        {
+          id: 'sub1',
+          name: 'Matematika Wajib',
+          teacher: 'Guru: Pak Hendra • Kelas XI',
+          icon: '📐',
+          chapters: [
+            { id: 'c1', title: 'Bab 1: Induksi Matematika', status: 'paham', note: 'Sudah kuasai langkah basis & induksi.' },
+            { id: 'c2', title: 'Bab 2: Program Linear', status: 'paham', note: 'Hati-hati saat menentukan daerah himpunan penyelesaian.' },
+            { id: 'c3', title: 'Bab 3: Matriks & Determinan', status: 'paham', note: 'Invers matriks 2x2 sudah lancar.' },
+            { id: 'c4', title: 'Bab 4: Integral Tak Tentu', status: 'review', note: 'Perlu latihan tambahan integral substitusi.' }
+          ]
+        },
+        {
+          id: 'sub2',
+          name: 'Fisika',
+          teacher: 'Guru: Bu Ratna • Lab IPA',
+          icon: '⚡',
+          chapters: [
+            { id: 'c5', title: 'Bab 1: Dinamika Rotasi & Kesetimbangan', status: 'review', note: 'Ingat rumus I = k.m.R^2 untuk bola pejal (2/5).' },
+            { id: 'c6', title: 'Bab 2: Elastisitas & Hukum Hooke', status: 'paham', note: 'Susunan pegas seri & paralel sudah oke.' },
+            { id: 'c7', title: 'Bab 3: Fluida Statis & Dinamis', status: 'belum', note: 'Belum dibahas di kelas.' }
+          ]
+        },
+        {
+          id: 'sub3',
+          name: 'Informatika',
+          teacher: 'Guru: Pak Dimas • Lab Komp',
+          icon: '💻',
+          chapters: [
+            { id: 'c8', title: 'Bab 1: Berpikir Komputasional', status: 'paham', note: 'Algoritma pencarian dan pengurutan dasar.' },
+            { id: 'c9', title: 'Bab 2: Struktur Data & Array', status: 'paham', note: 'Implementasi array & objek di JavaScript.' }
+          ]
+        },
+        {
+          id: 'sub4',
+          name: 'Sejarah Indonesia',
+          teacher: 'Guru: Bu Sari • Humaniora',
+          icon: '🏛️',
+          chapters: [
+            { id: 'c10', title: 'Bab 1: Pergerakan Nasional', status: 'paham', note: 'Organisasi Budi Utomo hingga Sumpah Pemuda.' },
+            { id: 'c11', title: 'Bab 2: Proklamasi & Kemerdekaan', status: 'review', note: 'Sedang menyusun makalah Bab 4.' },
+            { id: 'c12', title: 'Bab 3: Demokrasi Liberal', status: 'belum', note: 'Materi pekan depan.' }
+          ]
+        }
+      ]
+    };
+
+    /**
+     * ============================================================================
+     * GITHUB GIST API CLOUD SYNC ENGINE (NO LOCALSTORAGE)
+     * ============================================================================
+     */
+    let autoSyncTimer = null;
+
+    function buildSerializableData() {
+      return {
+        version: '2.0',
+        updatedAt: new Date().toISOString(),
+        dailyFocusGoal: state.dailyFocusGoal,
+        focusHoursToday: state.focusHoursToday,
+        tasks: state.tasks,
+        schedules: state.schedules,
+        subjects: state.subjects
+      };
+    }
+
+    function applyImportedData(data) {
+      if (!data || typeof data !== 'object') throw new Error('Format data tidak valid');
+      if (Array.isArray(data.tasks)) state.tasks = data.tasks;
+      if (Array.isArray(data.schedules)) state.schedules = data.schedules;
+      if (Array.isArray(data.subjects)) state.subjects = data.subjects;
+      if (typeof data.dailyFocusGoal === 'number') state.dailyFocusGoal = data.dailyFocusGoal;
+      if (typeof data.focusHoursToday === 'number') state.focusHoursToday = data.focusHoursToday;
+    }
+
+    function updateUrlGistParam(gistId) {
+      if (!gistId) return;
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('gist_id', gistId);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {
+        // Ignore in restricted iframe contexts
+      }
+    }
+
+    function updateSyncIndicators() {
+      const subEl = document.getElementById('header-date-subtitle');
+      const deskDot = document.getElementById('desk-sync-dot');
+      const mobDot = document.getElementById('mob-sync-dot');
+
+      let syncLabel = '☁️ Mode Sesi (Belum terhubung Gist)';
+      let dotClass = 'bg-stone-400';
+
+      if (state.gist.status === 'syncing') {
+        syncLabel = '🔄 Menyinkronkan ke GitHub Gist...';
+        dotClass = 'bg-solar animate-pulse';
+      } else if (state.gist.status === 'synced') {
+        syncLabel = `☁️ Gist Tersinkron (${state.gist.lastSyncedAt})`;
+        dotClass = 'bg-emerald-500';
+      } else if (state.gist.status === 'error') {
+        syncLabel = '⚠️ Gagal Sinkron Gist';
+        dotClass = 'bg-coral';
+      } else if (state.gist.gistId) {
+        syncLabel = `☁️ Gist ID: ${state.gist.gistId.slice(0, 8)}...`;
+        dotClass = 'bg-sky-500';
+      }
+
+      if (subEl) {
+        subEl.innerHTML = `${formatHeaderFullDate(TODAY_STR)} • <button onclick="openCloudSyncModal()" class="underline decoration-dotted hover:text-obsidian dark:hover:text-white transition">${syncLabel}</button>`;
+      }
+      if (deskDot) deskDot.className = `absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full ${dotClass} ring-2 ring-white dark:ring-[#1C1E24]`;
+      if (mobDot) mobDot.className = `absolute top-1 right-1.5 w-2 h-2 rounded-full ${dotClass}`;
+    }
+
+    function triggerAutoSync() {
+      if (!state.gist.autoSync || !state.gist.token) return;
+      clearTimeout(autoSyncTimer);
+      autoSyncTimer = setTimeout(() => {
+        syncPushToGist(false);
+      }, 1200);
+    }
+
+    async function syncPushToGist(isManual = true) {
+      const token = state.gist.token.trim();
+      const gistId = state.gist.gistId.trim();
+      if (!token) {
+        if (isManual) showToast('Masukkan GitHub Personal Access Token dulu!', 'error');
+        return;
+      }
+
+      state.gist.status = 'syncing';
+      state.gist.lastError = '';
+      updateSyncIndicators();
+
+      const payload = {
+        description: 'Plan.os — Personal Command Center Pelajar & OSIS',
+        public: false,
+        files: {
+          [state.gist.filename]: {
+            content: JSON.stringify(buildSerializableData(), null, 2)
+          }
+        }
+      };
+
+      try {
+        const endpoint = gistId
+          ? `https://api.github.com/gists/${encodeURIComponent(gistId)}`
+          : 'https://api.github.com/gists';
+        const method = gistId ? 'PATCH' : 'POST';
+
+        const res = await fetch(endpoint, {
+          method,
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || `HTTP ${res.status}`);
+        }
+
+        if (data.id) {
+          state.gist.gistId = data.id;
+          updateUrlGistParam(data.id);
+        }
+
+        const now = new Date();
+        state.gist.status = 'synced';
+        state.gist.lastSyncedAt = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        updateSyncIndicators();
+
+        if (isManual) {
+          showToast(gistId ? 'Berhasil disimpan ke GitHub Gist!' : 'Secret Gist baru dibuat & tersinkron!');
+          if (document.getElementById('gist-id-input')) {
+            openCloudSyncModal();
+          }
+        }
+      } catch (err) {
+        state.gist.status = 'error';
+        state.gist.lastError = err.message || 'Gagal terhubung ke GitHub API';
+        updateSyncIndicators();
+        if (isManual) {
+          showToast(`Gagal sync: ${state.gist.lastError}`, 'error');
+          if (document.getElementById('gist-id-input')) {
+            openCloudSyncModal();
+          }
+        }
+      }
+    }
+
+    async function syncPullFromGist(isManual = true) {
+      const token = state.gist.token.trim();
+      const gistId = state.gist.gistId.trim();
+      if (!gistId) {
+        if (isManual) showToast('Isi Gist ID terlebih dahulu untuk menarik data!', 'error');
+        return;
+      }
+
+      state.gist.status = 'syncing';
+      state.gist.lastError = '';
+      updateSyncIndicators();
+
+      try {
+        const headers = { 'Accept': 'application/vnd.github+json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const res = await fetch(`https://api.github.com/gists/${encodeURIComponent(gistId)}`, { headers });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || `HTTP ${res.status}`);
+        }
+
+        const files = data.files || {};
+        const targetFile = files[state.gist.filename] || Object.values(files).find(f => f && f.filename && f.filename.endsWith('.json'));
+        if (!targetFile || !targetFile.content) {
+          throw new Error('File JSON tidak ditemukan di dalam Gist tersebut');
+        }
+
+        const parsed = JSON.parse(targetFile.content);
+        applyImportedData(parsed);
+        updateUrlGistParam(gistId);
+
+        const now = new Date();
+        state.gist.status = 'synced';
+        state.gist.lastSyncedAt = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        updateSyncIndicators();
+        renderApp();
+
+        if (isManual) {
+          closeModal();
+          showToast('Data berhasil dimuat dari GitHub Gist!');
+        }
+      } catch (err) {
+        state.gist.status = 'error';
+        state.gist.lastError = err.message || 'Gagal mengambil data dari Gist';
+        updateSyncIndicators();
+        if (isManual) {
+          showToast(`Gagal tarik data: ${state.gist.lastError}`, 'error');
+          if (document.getElementById('gist-id-input')) {
+            openCloudSyncModal();
+          }
+        }
+      }
+    }
+
+    /**
+     * ============================================================================
+     * HELPERS & UI UTILITIES
+     * ============================================================================
+     */
+    function generateId(prefix = 'id') {
+      return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function formatIndoDate(dateStr) {
+      if (!dateStr) return '-';
+      if (dateStr === TODAY_STR) return 'Hari ini';
+      if (dateStr === addDaysToStr(TODAY_STR, 1)) return 'Besok';
+      if (dateStr === addDaysToStr(TODAY_STR, -1)) return 'Kemarin';
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return dateStr;
+      const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+      return `${DAY_NAMES_SHORT_ID[d.getDay()]}, ${d.getDate()} ${MONTH_SHORT_ID[d.getMonth()]}`;
+    }
+
+    function showToast(msg, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = `${type === 'error' ? 'bg-coral text-white' : 'bg-obsidian dark:bg-white text-white dark:text-obsidian'} px-4 py-2.5 rounded-full shadow-xl text-xs font-bold flex items-center gap-2 animate-fade-in`;
+      el.innerHTML = `<span>${type === 'error' ? '⚠️' : '✨'}</span><span>${escapeHtml(msg)}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 250);
+      }, 2400);
+    }
+
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      showToast(isDark ? 'Mode Gelap Obsidian aktif' : 'Mode Hangat Alabaster aktif');
+    }
+
+    function handleGlobalSearch(val) {
+      state.searchQuery = val.trim();
+      if (state.searchQuery && state.currentTab !== 'tasks') {
+        switchTab('tasks', false);
+      } else {
+        renderApp();
+      }
+    }
+
+    function switchTab(tab, clearSearch = false) {
+      state.currentTab = tab;
+      if (clearSearch) {
+        state.searchQuery = '';
+        const inp = document.getElementById('global-search-input');
+        if (inp) inp.value = '';
+      }
+
+      document.querySelectorAll('.desk-nav').forEach(btn => {
+        const isTarget = btn.getAttribute('data-nav') === tab;
+        if (isTarget) {
+          btn.className = 'desk-nav w-11 h-11 rounded-full flex items-center justify-center transition bg-obsidian dark:bg-solar text-solar dark:text-obsidian shadow-md';
+        } else {
+          btn.className = 'desk-nav w-11 h-11 rounded-full flex items-center justify-center transition text-stone-400 hover:text-obsidian dark:hover:text-white';
+        }
+      });
+
+      document.querySelectorAll('.mob-nav').forEach(btn => {
+        const isTarget = btn.getAttribute('data-nav') === tab;
+        const label = btn.querySelector('.nav-label');
+        if (isTarget) {
+          btn.className = 'mob-nav px-3.5 py-2 rounded-full flex items-center gap-1.5 bg-obsidian dark:bg-solar text-solar dark:text-obsidian text-xs font-bold transition';
+          if (label) label.classList.remove('hidden');
+        } else {
+          btn.className = 'mob-nav p-2.5 rounded-full flex items-center gap-1.5 text-stone-400 text-xs font-bold transition';
+          if (label) label.classList.add('hidden');
+        }
+      });
+
+      renderApp();
+    }
+
+    /**
+     * ============================================================================
+     * COMPONENT BUILDERS
+     * ============================================================================
+     */
+    function renderSegmentedPillBar(completed, total, totalTicks = 10) {
+      const ratio = total > 0 ? completed / total : 0;
+      const activeTicks = Math.round(ratio * totalTicks);
+      let ticksHtml = '';
+      for (let i = 0; i < totalTicks; i++) {
+        const filled = i < activeTicks;
+        ticksHtml += `<span class="w-1.5 h-3.5 rounded-full transition-all duration-300 ${filled ? 'bg-coral' : 'bg-[#E5E0D8] dark:bg-stone-700'}"></span>`;
+      }
+      return `<div class="flex items-center gap-[3px]">${ticksHtml}</div>`;
+    }
+
+    /**
+     * ============================================================================
+     * TAB 1: DASHBOARD BENTO UTAMA
+     * ============================================================================
+     */
+    function renderDashboardTab() {
+      const totalTasks = state.tasks.length;
+      const completedTasks = state.tasks.filter(t => t.completed).length;
+      const activeTasks = state.tasks.filter(t => !t.completed);
+      const urgentTasks = activeTasks.filter(t => t.priority === 'Tinggi');
+      const osisCount = activeTasks.filter(t => t.category === 'OSIS').length + state.schedules.filter(s => s.category === 'OSIS').length;
+      const schoolCount = activeTasks.filter(t => t.category === 'Sekolah').length;
+
+      const overallPct = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+      const goalVal = state.dailyFocusGoal;
+      const currentVal = completedTasks;
+      const arcRatio = Math.min(currentVal / Math.max(goalVal, 1), 1);
+      const circumference = 251.2;
+      const arcLength = circumference * 0.75;
+      const strokeDashoffset = arcLength - (arcLength * arcRatio);
+
+      const selectedDateSchedules = state.schedules.filter(s => s.date === state.selectedCalendarDate);
+      const selectedDateDeadlines = state.tasks.filter(t => t.deadlineDate === state.selectedCalendarDate);
+
+      const catStats = ['Sekolah', 'OSIS', 'Project', 'Rutin'].map(cat => {
+        const count = state.tasks.filter(t => t.category === cat).length;
+        return { cat, count };
+      }).sort((a, b) => b.count - a.count);
+      const maxCatCount = Math.max(...catStats.map(c => c.count), 1);
+
+      const calMonthLabel = `${MONTH_SHORT_ID[state.calendarMonth]} ${state.calendarYear}`;
+
+      return `
+        <!-- 1. KPI OVERVIEW STRIP -->
+        <section>
+          <div class="flex items-center justify-between mb-2.5">
+            <h2 class="text-xs font-display font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">Ringkasan Aktivitas</h2>
+            <button onclick="openCloudSyncModal()" class="text-[11px] font-bold text-slateTeal dark:text-solar hover:underline">
+              ${state.gist.status === 'synced' ? '☁️ Tersinkron Gist' : '☁️ Hubungkan Gist'}
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div onclick="switchTab('tasks')" class="bg-white dark:bg-[#1C1E24] p-3.5 rounded-[22px] border border-stone-200/70 dark:border-stone-800 flex items-center gap-3 cursor-pointer hover:border-stone-300 transition shadow-2xs">
+              <div class="w-11 h-11 rounded-2xl bg-[#E7F2EC] dark:bg-emerald-950/60 text-[#256343] dark:text-emerald-300 flex items-center justify-center text-lg flex-shrink-0">
+                📋
+              </div>
+              <div>
+                <div class="text-xl font-display font-extrabold text-obsidian dark:text-white leading-none">${activeTasks.length}</div>
+                <div class="text-[11px] font-medium text-stone-500 dark:text-stone-400 mt-1">Tugas Aktif</div>
+              </div>
+            </div>
+
+            <div onclick="switchTab('tasks')" class="bg-white dark:bg-[#1C1E24] p-3.5 rounded-[22px] border border-stone-200/70 dark:border-stone-800 flex items-center gap-3 cursor-pointer hover:border-stone-300 transition shadow-2xs">
+              <div class="w-11 h-11 rounded-2xl bg-[#E6EEF2] dark:bg-sky-950/60 text-[#2E5063] dark:text-sky-300 flex items-center justify-center text-lg flex-shrink-0">
+                ✅
+              </div>
+              <div>
+                <div class="text-xl font-display font-extrabold text-obsidian dark:text-white leading-none">${completedTasks}</div>
+                <div class="text-[11px] font-medium text-stone-500 dark:text-stone-400 mt-1">Tugas Selesai</div>
+              </div>
+            </div>
+
+            <div onclick="switchTab('calendar')" class="bg-white dark:bg-[#1C1E24] p-3.5 rounded-[22px] border border-stone-200/70 dark:border-stone-800 flex items-center gap-3 cursor-pointer hover:border-stone-300 transition shadow-2xs">
+              <div class="w-11 h-11 rounded-2xl bg-[#FEF6D8] dark:bg-amber-950/60 text-[#8F6B00] dark:text-amber-300 flex items-center justify-center text-lg flex-shrink-0">
+                🏛️
+              </div>
+              <div>
+                <div class="text-xl font-display font-extrabold text-obsidian dark:text-white leading-none">${osisCount}</div>
+                <div class="text-[11px] font-medium text-stone-500 dark:text-stone-400 mt-1">Agenda OSIS</div>
+              </div>
+            </div>
+
+            <div onclick="openRemindersModal()" class="relative bg-[#FBF3F0] dark:bg-[#261B19] p-3.5 rounded-[22px] border border-[#F2D5CC] dark:border-rose-900/50 flex items-center gap-3 cursor-pointer hover:brightness-98 transition shadow-2xs">
+              <div class="w-11 h-11 rounded-2xl bg-[#F8DFD7] dark:bg-rose-950 text-coral flex items-center justify-center text-lg flex-shrink-0">
+                🔥
+              </div>
+              <div>
+                <div class="text-xl font-display font-extrabold text-obsidian dark:text-white leading-none">${urgentTasks.length}</div>
+                <div class="text-[11px] font-semibold text-coral mt-1">Prioritas Tinggi</div>
+              </div>
+              <span class="absolute bottom-2 right-2.5 w-4 h-4 rounded-full bg-white dark:bg-stone-800 text-[10px] font-bold text-stone-500 flex items-center justify-center shadow-2xs">i</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. HERO BENTO ROW -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+          <!-- LEFT HERO CARD: Warm Taupe Surface with 3 Overlapping Glowing Bubbles -->
+          <div class="lg:col-span-7 bg-taupeCard dark:bg-taupeDark rounded-[28px] p-5 md:p-6 relative overflow-hidden flex flex-col justify-between min-h-[265px] shadow-sm">
+            <div class="flex items-start justify-between z-10">
+              <div>
+                <h2 class="text-base md:text-lg font-display font-extrabold text-obsidian dark:text-white leading-snug">
+                  Distribusi Fokus<br/>& Beban Hari Ini
+                </h2>
+              </div>
+              <button onclick="openQuickAddModal('task')" title="Tambah Target Fokus" class="w-9 h-9 rounded-full bg-obsidian text-solar flex items-center justify-center shadow-md hover:scale-105 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              </button>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-3 z-10">
+              <div class="flex sm:flex-col gap-3 sm:gap-2.5 self-start sm:self-end mb-1">
+                <div class="flex items-center gap-2">
+                  <span class="w-5 h-2 rounded-full bg-solar shadow-2xs"></span>
+                  <span class="text-xs font-semibold text-obsidian/80 dark:text-stone-200">Sekolah & Materi</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-5 h-2 rounded-full bg-coral shadow-2xs"></span>
+                  <span class="text-xs font-semibold text-obsidian/80 dark:text-stone-200">OSIS & Kepanitiaan</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-5 h-2 rounded-full bg-obsidian dark:bg-stone-400 shadow-2xs"></span>
+                  <span class="text-xs font-semibold text-obsidian/80 dark:text-stone-200">Jam Belajar</span>
+                </div>
+              </div>
+
+              <!-- 3 Overlapping Proportional Bubbles -->
+              <div class="relative w-64 h-48 flex-shrink-0 mx-auto sm:mx-0">
+                <!-- Safe Stepper Modal on tap to prevent accidental increments -->
+                <button onclick="openFocusHoursModal()" title="Atur jam belajar hari ini" class="bubble-obsidian absolute left-3 top-2 w-20 h-20 rounded-full flex flex-col items-center justify-center text-white z-20 hover:scale-105 transition active:scale-95">
+                  <span class="text-sm font-display font-extrabold leading-none">${state.focusHoursToday}</span>
+                  <span class="text-[10px] text-stone-300 mt-0.5">jam ✎</span>
+                </button>
+
+                <button onclick="filterFromBubble('Sekolah')" class="bubble-yellow absolute right-2 top-3 w-36 h-36 rounded-full flex flex-col items-center justify-center text-obsidian z-10 hover:scale-105 transition active:scale-95">
+                  <span class="text-xl font-display font-extrabold leading-none">${schoolCount}</span>
+                  <span class="text-[11px] font-bold text-obsidian/80 mt-1">Tugas Mapel</span>
+                </button>
+
+                <button onclick="filterFromBubble('OSIS')" class="bubble-coral absolute left-4 bottom-1 w-24 h-24 rounded-full flex flex-col items-center justify-center text-white z-30 hover:scale-105 transition active:scale-95">
+                  <span class="text-base font-display font-extrabold leading-none">${osisCount}</span>
+                  <span class="text-[10px] font-semibold text-white/90 mt-0.5">OSIS</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT HERO CARD: Multi-Month Dark Obsidian Interactive Calendar Card -->
+          <div class="lg:col-span-5 bg-obsidian text-white rounded-[28px] p-5 flex flex-col justify-between shadow-lg">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-base font-display font-bold text-white">Kalender & Deadline</h2>
+              <div class="flex items-center gap-1.5">
+                <button onclick="changeCalendarMonth(-1)" aria-label="Bulan Sebelumnya" class="w-7 h-7 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs font-bold transition">&lsaquo;</button>
+                <button onclick="switchTab('calendar')" class="text-xs font-bold text-solar px-1.5 hover:underline">${calMonthLabel}</button>
+                <button onclick="changeCalendarMonth(1)" aria-label="Bulan Berikutnya" class="w-7 h-7 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs font-bold transition">&rsaquo;</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="grid grid-cols-7 text-center text-[10px] font-bold text-stone-400 mb-2">
+                <span>S</span><span>S</span><span>R</span><span>K</span><span>J</span><span>S</span><span>M</span>
+              </div>
+              <div class="grid grid-cols-7 gap-y-1.5 text-center text-xs">
+                ${renderObsidianCalendarDays()}
+              </div>
+            </div>
+
+            <div class="mt-3 pt-2.5 border-t border-stone-800 flex items-center justify-between text-[11px]">
+              <span class="text-stone-300 truncate max-w-[190px]">
+                📅 <strong>${formatIndoDate(state.selectedCalendarDate)}:</strong> ${selectedDateSchedules.length} agenda, ${selectedDateDeadlines.length} tugas
+              </span>
+              <button onclick="switchTab('calendar')" class="text-solar font-bold hover:underline">Detail &rsaquo;</button>
+            </div>
+
+            <div class="flex items-center justify-between text-[10px] text-stone-400 mt-2.5">
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full border border-white inline-block"></span> Hari ini</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-solar inline-block"></span> Selesai</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-stone-700 border border-stone-500 inline-block"></span> Terjadwal</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. LOWER BENTO ROW -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-5 flex flex-col gap-4">
+            <!-- Card A: Daily Target Radial Arc Gauge -->
+            <div class="bg-white dark:bg-[#1C1E24] rounded-[26px] p-5 border border-stone-200/70 dark:border-stone-800 flex items-center justify-between shadow-2xs">
+              <div class="flex flex-col justify-between h-full">
+                <div>
+                  <h3 class="text-base font-display font-bold text-obsidian dark:text-white">Target Harian</h3>
+                  <p class="text-xs text-stone-400 mt-0.5">Jaga ritme belajarmu</p>
+                </div>
+
+                <button onclick="cycleDailyGoal()" class="mt-5 inline-flex items-center gap-2 text-xs font-bold text-obsidian dark:text-stone-200 hover:text-coral transition">
+                  <span>Ubah Target</span>
+                  <span class="w-6 h-6 rounded-full bg-obsidian dark:bg-stone-700 text-solar flex items-center justify-center text-[10px]">✎</span>
+                </button>
+              </div>
+
+              <div class="relative w-28 h-24 flex items-center justify-center">
+                <svg class="w-28 h-28 -rotate-[225deg]" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="${arcLength} ${circumference}" class="text-stone-200 dark:text-stone-700" />
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#FF5E3A" stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="${arcLength} ${circumference}" stroke-dashoffset="${strokeDashoffset}" class="transition-all duration-500" />
+                </svg>
+
+                <span class="absolute -top-1 right-0 px-2 py-0.5 rounded-full bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-[10px] font-extrabold text-obsidian dark:text-white shadow-xs">
+                  ${currentVal} selesai
+                </span>
+
+                <div class="absolute inset-0 flex flex-col items-center justify-center pt-1">
+                  <span class="text-[10px] font-medium text-stone-400">Target</span>
+                  <span class="text-lg font-display font-extrabold text-obsidian dark:text-white leading-tight">${goalVal} Tugas</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card B: Overall Completion Track -->
+            <div class="bg-white dark:bg-[#1C1E24] rounded-[26px] p-5 border border-stone-200/70 dark:border-stone-800 shadow-2xs">
+              <div class="flex items-start justify-between mb-6">
+                <h3 class="text-base font-display font-bold text-obsidian dark:text-white">Progres Keseluruhan</h3>
+                <div class="text-right">
+                  <span class="text-base font-display font-extrabold text-obsidian dark:text-white block leading-none">${overallPct}%</span>
+                  <span class="text-[10px] text-stone-400 font-medium">Tercapai</span>
+                </div>
+              </div>
+
+              <div class="relative pt-2 pb-1">
+                <div class="absolute -top-5 -translate-x-1/2 transition-all duration-500" style="left: ${Math.min(Math.max(overallPct, 10), 90)}%">
+                  <div class="bg-obsidian dark:bg-solar text-white dark:text-obsidian text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-md whitespace-nowrap">
+                    ${completedTasks}/${totalTasks} tugas
+                  </div>
+                  <div class="w-1.5 h-1.5 bg-obsidian dark:bg-solar rotate-45 mx-auto -mt-1"></div>
+                </div>
+
+                <div class="w-full h-3 bg-stone-200 dark:bg-stone-700 rounded-full relative flex items-center px-1.5 justify-between">
+                  <div class="absolute left-0 top-0 bottom-0 bg-obsidian dark:bg-solar rounded-full transition-all duration-500" style="width: ${overallPct}%"></div>
+                  <span class="w-1.5 h-1.5 rounded-full bg-white/50 z-10"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-white/50 z-10"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-stone-400/60 z-10"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-stone-400/60 z-10"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-stone-400/60 z-10"></span>
+                </div>
+
+                <div class="flex justify-between text-[11px] font-bold text-stone-500 dark:text-stone-400 mt-2">
+                  <span>0% Mulai</span>
+                  <span>100% Tuntas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: Progres Materi Pelajaran -->
+          <div class="lg:col-span-7 bg-white dark:bg-[#1C1E24] rounded-[26px] p-5 border border-stone-200/70 dark:border-stone-800 flex flex-col justify-between shadow-2xs">
+            <div class="flex items-center justify-between mb-3.5">
+              <div>
+                <h3 class="text-base font-display font-bold text-obsidian dark:text-white">Progres Materi Pelajaran</h3>
+                <p class="text-[11px] text-stone-400">Ketuk mata pelajaran untuk edit bab & catatan</p>
+              </div>
+              <button onclick="openAddSubjectModal()" class="inline-flex items-center gap-1.5 text-xs font-bold text-obsidian dark:text-white hover:opacity-80">
+                <span>Tambah</span>
+                <span class="w-6 h-6 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian flex items-center justify-center text-sm">+</span>
+              </button>
+            </div>
+
+            <div class="space-y-2.5">
+              ${state.subjects.map(sub => {
+                const totalBab = sub.chapters.length;
+                const pahamBab = sub.chapters.filter(c => c.status === 'paham').length;
+                return `
+                  <div onclick="openSubjectDetailModal('${sub.id}')" class="p-3 rounded-2xl bg-[#F7F5F0] dark:bg-[#23262E] hover:bg-[#EFECE4] dark:hover:bg-[#2A2E38] transition cursor-pointer flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <div class="w-10 h-10 rounded-full bg-[#E5DEC9] dark:bg-stone-700 flex items-center justify-center text-lg flex-shrink-0">
+                        ${sub.icon}
+                      </div>
+                      <div class="min-w-0">
+                        <h4 class="text-xs sm:text-sm font-display font-bold text-obsidian dark:text-white truncate">${escapeHtml(sub.name)}</h4>
+                        <p class="text-[11px] text-stone-500 dark:text-stone-400 truncate">${escapeHtml(sub.teacher || `${totalBab} Bab Terdaftar`)}</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                      <div class="hidden sm:block text-right">
+                        <span class="text-[11px] text-stone-400">Bab paham: </span>
+                        <span class="text-xs font-extrabold text-obsidian dark:text-white">${pahamBab}/${totalBab}</span>
+                      </div>
+                      ${renderSegmentedPillBar(pahamBab, totalBab, 10)}
+                      <span class="text-stone-400 font-bold text-xs pl-1">•••</span>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. BOTTOM ANALYTICS & QUICK PRIORITY TASKS ROW -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 bg-white dark:bg-[#1C1E24] rounded-[26px] p-5 border border-stone-200/70 dark:border-stone-800 shadow-2xs">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-display font-bold text-obsidian dark:text-white">Fokus Tugas Prioritas</h3>
+              <button onclick="switchTab('tasks')" class="text-xs font-bold text-slateTeal dark:text-solar hover:underline">Lihat Semua &rsaquo;</button>
+            </div>
+            <div class="space-y-2.5">
+              ${activeTasks.slice(0, 3).map(task => renderBentoTaskRow(task)).join('')}
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 bg-white dark:bg-[#1C1E24] rounded-[26px] p-5 border border-stone-200/70 dark:border-stone-800 shadow-2xs flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-display font-bold text-obsidian dark:text-white">Distribusi Kategori</h3>
+              <span class="text-[11px] font-semibold text-stone-400">Total Tugas</span>
+            </div>
+
+            <div class="space-y-3.5 my-auto">
+              ${catStats.map(item => {
+                const st = CATEGORY_STYLES[item.cat];
+                const widthPct = Math.round((item.count / maxCatCount) * 100);
+                return `
+                  <div onclick="filterFromBubble('${item.cat}')" class="cursor-pointer group">
+                    <div class="flex items-center justify-between text-xs mb-1">
+                      <span class="font-semibold text-stone-700 dark:text-stone-300 group-hover:text-obsidian dark:group-hover:text-white">${st.emoji} ${item.cat}</span>
+                      <span class="font-display font-extrabold text-obsidian dark:text-white">${item.count} tugas</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
+                      <div class="h-full rounded-full transition-all duration-500" style="width: ${widthPct}%; background-color: ${st.barColor}"></div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    // Dynamic Multi-Month Obsidian Calendar Renderer (Monday-first grid)
+    function renderObsidianCalendarDays() {
+      const year = state.calendarYear;
+      const month = state.calendarMonth; // 0-11
+      const firstDayJs = new Date(year, month, 1).getDay(); // 0=Sun..6=Sat
+      const mondayOffset = (firstDayJs + 6) % 7; // 0=Mon..6=Sun
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      const completedDates = new Set(state.tasks.filter(t => t.completed).map(t => t.deadlineDate));
+      const scheduledDates = new Set([
+        ...state.schedules.map(s => s.date),
+        ...state.tasks.filter(t => !t.completed).map(t => t.deadlineDate)
+      ]);
+
+      let cells = '';
+      for (let e = 0; e < mondayOffset; e++) {
+        cells += `<span></span>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const isSelected = dateStr === state.selectedCalendarDate;
+        const isToday = dateStr === TODAY_STR;
+        const hasDone = completedDates.has(dateStr);
+        const hasSched = scheduledDates.has(dateStr);
+
+        let cls = 'w-7 h-7 mx-auto rounded-full flex items-center justify-center font-semibold transition cursor-pointer ';
+        if (hasDone && !isSelected) {
+          cls += 'bg-solar text-obsidian font-extrabold shadow-xs';
+        } else if (isSelected) {
+          cls += 'ring-2 ring-white bg-white/15 text-white font-extrabold';
+        } else if (hasSched) {
+          cls += 'bg-[#2B3028] text-stone-200 border border-[#495240]';
+        } else if (isToday) {
+          cls += 'border border-stone-400 text-white font-bold';
+        } else {
+          cls += 'text-stone-400 hover:bg-stone-800';
+        }
+
+        cells += `<button onclick="selectCalendarDay('${dateStr}')" class="${cls}">${day}</button>`;
+      }
+      return cells;
+    }
+
+    function changeCalendarMonth(delta) {
+      let m = state.calendarMonth + delta;
+      let y = state.calendarYear;
+      if (m < 0) {
+        m = 11;
+        y -= 1;
+      } else if (m > 11) {
+        m = 0;
+        y += 1;
+      }
+      state.calendarMonth = m;
+      state.calendarYear = y;
+      renderApp();
+    }
+
+    function selectCalendarDay(dateStr) {
+      state.selectedCalendarDate = dateStr;
+      const [y, m] = dateStr.split('-').map(Number);
+      state.calendarYear = y;
+      state.calendarMonth = m - 1;
+      renderApp();
+    }
+
+    function filterFromBubble(category) {
+      state.taskFilterCategory = category;
+      switchTab('tasks');
+    }
+
+    function openFocusHoursModal() {
+      const root = document.getElementById('modal-root');
+      root.innerHTML = `
+        <div onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-xs flex items-end md:items-center justify-center animate-fade-in p-0 md:p-4">
+          <div class="w-full max-w-sm bg-white dark:bg-[#1C1E24] rounded-t-[30px] md:rounded-[30px] p-5 shadow-2xl border border-stone-200 dark:border-stone-800 animate-slide-up">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-display font-extrabold">⏱️ Catat Jam Belajar Hari Ini</h3>
+              <button onclick="closeModal()" class="text-xs font-bold text-stone-400">Tutup</button>
+            </div>
+            <div class="flex items-center justify-center gap-5 my-4">
+              <button onclick="setFocusHours(state.focusHoursToday - 0.5)" class="w-11 h-11 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-lg font-extrabold hover:opacity-80">−</button>
+              <div class="text-center">
+                <span class="text-3xl font-display font-extrabold text-obsidian dark:text-white">${state.focusHoursToday}</span>
+                <span class="block text-xs text-stone-400">jam fokus</span>
+              </div>
+              <button onclick="setFocusHours(state.focusHoursToday + 0.5)" class="w-11 h-11 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-lg font-extrabold hover:opacity-80">+</button>
+            </div>
+            <div class="grid grid-cols-4 gap-2 mb-4">
+              ${[1, 2, 3.5, 5].map(v => `
+                <button onclick="setFocusHours(${v})" class="py-1.5 rounded-full text-xs font-bold bg-[#F7F5F0] dark:bg-stone-800 hover:bg-solar hover:text-obsidian transition">${v} jam</button>
+              `).join('')}
+            </div>
+            <button onclick="closeModal()" class="w-full py-2.5 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-extrabold">Selesai</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function setFocusHours(val) {
+      state.focusHoursToday = Math.max(0, Math.min(24, Number(val.toFixed(1))));
+      renderApp();
+      triggerAutoSync();
+      if (document.getElementById('modal-root').innerHTML) {
+        openFocusHoursModal();
+      }
+    }
+
+    function cycleDailyGoal() {
+      const goals = [3, 5, 7, 10];
+      const next = goals[(goals.indexOf(state.dailyFocusGoal) + 1) % goals.length];
+      state.dailyFocusGoal = next;
+      renderApp();
+      triggerAutoSync();
+      showToast(`Target harian diubah ke ${next} tugas`);
+    }
+
+    // Reusable Bento Task Row
+    function renderBentoTaskRow(task) {
+      const cat = CATEGORY_STYLES[task.category] || CATEGORY_STYLES['Sekolah'];
+      const prio = PRIORITY_STYLES[task.priority] || PRIORITY_STYLES['Sedang'];
+      const subTotal = task.subtasks.length;
+      const subDone = task.subtasks.filter(s => s.done).length;
+
+      return `
+        <div onclick="openTaskDetailModal('${task.id}')" class="p-3.5 rounded-2xl bg-[#F7F5F0] dark:bg-[#23262E] hover:bg-[#EFECE4] dark:hover:bg-[#2B2F39] transition cursor-pointer flex items-center justify-between gap-3 ${task.completed ? 'opacity-60' : ''}">
+          <div class="flex items-start gap-3 min-w-0">
+            <button onclick="toggleTaskDone('${task.id}', event)" class="mt-0.5 w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition ${task.completed ? 'bg-obsidian dark:bg-solar border-obsidian dark:border-solar text-solar dark:text-obsidian' : 'border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800'}">
+              ${task.completed ? '✓' : ''}
+            </button>
+            <div class="min-w-0">
+              <div class="flex items-center flex-wrap gap-1.5 mb-1">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${cat.pill}">${cat.emoji} ${task.category}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${prio.badge}">${prio.label}</span>
+              </div>
+              <h4 class="text-xs sm:text-sm font-display font-bold text-obsidian dark:text-white truncate ${task.completed ? 'line-through' : ''}">
+                ${escapeHtml(task.title)}
+              </h4>
+              <p class="text-[11px] text-stone-500 dark:text-stone-400 mt-0.5">
+                📅 ${formatIndoDate(task.deadlineDate)} • ${task.deadlineTime}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
+            ${subTotal > 0 ? `
+              <span class="text-[10px] font-bold text-stone-500 dark:text-stone-400">Langkah: ${subDone}/${subTotal}</span>
+              ${renderSegmentedPillBar(subDone, subTotal, Math.min(subTotal, 6))}
+            ` : `
+              <span class="text-xs text-stone-400 font-bold">&rsaquo;</span>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * TAB 2: DAFTAR TUGAS & SUBTASK
+     * ============================================================================
+     */
+    function renderTasksTab() {
+      const categories = ['Semua', 'Sekolah', 'OSIS', 'Project', 'Rutin'];
+      const activeCount = state.tasks.filter(t => !t.completed).length;
+      const doneCount = state.tasks.filter(t => t.completed).length;
+
+      const filtered = state.tasks
+        .filter(t => {
+          const matchStatus = state.taskFilterStatus === 'active' ? !t.completed : t.completed;
+          const matchCat = state.taskFilterCategory === 'Semua' || t.category === state.taskFilterCategory;
+          const q = state.searchQuery.toLowerCase();
+          const matchSearch = !q || t.title.toLowerCase().includes(q) || (t.notes && t.notes.toLowerCase().includes(q));
+          return matchStatus && matchCat && matchSearch;
+        })
+        .sort((a, b) => PRIORITY_STYLES[b.priority].weight - PRIORITY_STYLES[a.priority].weight);
+
+      return `
+        <div class="bg-white dark:bg-[#1C1E24] rounded-[28px] p-5 border border-stone-200/70 dark:border-stone-800 shadow-2xs space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-display font-extrabold text-obsidian dark:text-white">Manajemen Tugas & Subtask</h2>
+              <p class="text-xs text-stone-400">Ketuk tugas untuk edit detail atau kelola subtask</p>
+            </div>
+            <button onclick="openQuickAddModal('task')" class="px-4 py-2 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-bold">
+              + Tugas Baru
+            </button>
+          </div>
+
+          <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            ${categories.map(cat => {
+              const isSelected = state.taskFilterCategory === cat;
+              return `
+                <button onclick="setTaskCategory('${cat}')" class="px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition ${isSelected ? 'bg-obsidian dark:bg-solar text-solar dark:text-obsidian shadow-xs' : 'bg-[#F3F1ED] dark:bg-stone-800 text-stone-600 dark:text-stone-300'}">
+                  ${cat === 'Semua' ? 'Semua Kategori' : `${CATEGORY_STYLES[cat].emoji} ${cat}`}
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <div class="grid grid-cols-2 p-1 rounded-full bg-[#F3F1ED] dark:bg-stone-800 max-w-xs">
+            <button onclick="setTaskStatus('active')" class="py-1.5 rounded-full text-xs font-bold transition ${state.taskFilterStatus === 'active' ? 'bg-white dark:bg-[#1C1E24] text-obsidian dark:text-white shadow-2xs' : 'text-stone-500'}">
+              Aktif (${activeCount})
+            </button>
+            <button onclick="setTaskStatus('completed')" class="py-1.5 rounded-full text-xs font-bold transition ${state.taskFilterStatus === 'completed' ? 'bg-white dark:bg-[#1C1E24] text-obsidian dark:text-white shadow-2xs' : 'text-stone-500'}">
+              Selesai (${doneCount})
+            </button>
+          </div>
+
+          <div class="space-y-2.5">
+            ${filtered.length === 0 ? `
+              <div class="p-8 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800/50 text-center">
+                <p class="text-sm font-bold text-obsidian dark:text-white">Tidak ada tugas ditemukan</p>
+                <p class="text-xs text-stone-400 mt-1">Ganti filter kategori atau tambahkan tugas baru.</p>
+              </div>
+            ` : filtered.map(t => renderBentoTaskRow(t)).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function setTaskCategory(cat) {
+      state.taskFilterCategory = cat;
+      renderApp();
+    }
+
+    function setTaskStatus(status) {
+      state.taskFilterStatus = status;
+      renderApp();
+    }
+
+    /**
+     * ============================================================================
+     * TAB 3: KALENDER & TIMELINE (MULTI-MONTH + EDIT/DELETE SCHEDULE)
+     * ============================================================================
+     */
+    function renderCalendarTab() {
+      const selDate = state.selectedCalendarDate;
+      const daySchedules = state.schedules.filter(s => s.date === selDate);
+      const dayTasks = state.tasks.filter(t => t.deadlineDate === selDate);
+      const calMonthFullLabel = `${MONTH_NAMES_ID[state.calendarMonth]} ${state.calendarYear}`;
+
+      const timeline = [
+        ...daySchedules.map(s => ({
+          type: 'schedule',
+          time: s.startTime,
+          endTime: s.endTime,
+          title: s.title,
+          subtitle: s.location,
+          category: s.category,
+          id: s.id
+        })),
+        ...dayTasks.map(t => ({
+          type: 'deadline',
+          time: t.deadlineTime,
+          title: `DEADLINE: ${t.title}`,
+          subtitle: `${t.priority} • ${t.completed ? 'Selesai' : 'Belum Selesai'}`,
+          category: t.category,
+          completed: t.completed,
+          id: t.id
+        }))
+      ].sort((a, b) => a.time.localeCompare(b.time));
+
+      return `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Left: Multi-Month Dark Obsidian Calendar Card -->
+          <div class="lg:col-span-5 bg-obsidian text-white rounded-[28px] p-5 shadow-lg h-fit">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <button onclick="changeCalendarMonth(-1)" aria-label="Bulan Sebelumnya" class="w-8 h-8 rounded-full bg-stone-800 hover:bg-stone-700 text-white flex items-center justify-center font-bold">&lsaquo;</button>
+                <div>
+                  <h2 class="text-sm font-display font-bold">${calMonthFullLabel}</h2>
+                  <p class="text-[10px] text-stone-400">Ketuk tanggal untuk cek jadwal</p>
+                </div>
+                <button onclick="changeCalendarMonth(1)" aria-label="Bulan Berikutnya" class="w-8 h-8 rounded-full bg-stone-800 hover:bg-stone-700 text-white flex items-center justify-center font-bold">&rsaquo;</button>
+              </div>
+              <button onclick="openQuickAddModal('schedule')" class="px-3.5 py-1.5 rounded-full bg-solar text-obsidian text-xs font-extrabold">
+                + Jadwal
+              </button>
+            </div>
+
+            <div class="grid grid-cols-7 text-center text-[10px] font-bold text-stone-400 mb-2">
+              <span>S</span><span>S</span><span>R</span><span>K</span><span>J</span><span>S</span><span>M</span>
+            </div>
+            <div class="grid grid-cols-7 gap-y-2 text-center text-xs">
+              ${renderObsidianCalendarDays()}
+            </div>
+
+            <div class="flex items-center justify-between text-[10px] text-stone-400 mt-5 pt-3 border-t border-stone-800">
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full border border-white inline-block"></span> Terpilih</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-solar inline-block"></span> Selesai</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-stone-700 border border-stone-500 inline-block"></span> Terjadwal</span>
+            </div>
+          </div>
+
+          <!-- Right: Chronological Timeline Card -->
+          <div class="lg:col-span-7 bg-white dark:bg-[#1C1E24] rounded-[28px] p-5 border border-stone-200/70 dark:border-stone-800 shadow-2xs">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-base font-display font-extrabold text-obsidian dark:text-white">Timeline ${formatIndoDate(selDate)}</h3>
+                <p class="text-xs text-stone-400">${daySchedules.length} kegiatan & ${dayTasks.length} tenggat tugas</p>
+              </div>
+              ${selDate !== TODAY_STR ? `
+                <button onclick="selectCalendarDay('${TODAY_STR}')" class="px-3 py-1 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-xs font-bold">Hari Ini</button>
+              ` : ''}
+            </div>
+
+            <div class="space-y-3">
+              ${timeline.length === 0 ? `
+                <div class="p-8 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800/50 text-center">
+                  <p class="text-sm font-bold text-obsidian dark:text-white">Tidak ada bentrok jadwal 🌿</p>
+                  <p class="text-xs text-stone-400 mt-1">Hari ini kosong, pas untuk review materi pelajaran.</p>
+                </div>
+              ` : timeline.map(item => {
+                const cat = CATEGORY_STYLES[item.category] || CATEGORY_STYLES['Sekolah'];
+                const isDeadline = item.type === 'deadline';
+                return `
+                  <div onclick="${isDeadline ? `openTaskDetailModal('${item.id}')` : ''}" class="flex gap-3 items-stretch ${isDeadline ? 'cursor-pointer' : ''}">
+                    <div class="w-14 text-right pt-1 flex-shrink-0">
+                      <span class="text-xs font-display font-extrabold text-obsidian dark:text-white">${item.time}</span>
+                      <span class="block text-[10px] text-stone-400">${item.endTime || 'Batas'}</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                      <span class="w-3 h-3 rounded-full mt-1.5 ${isDeadline ? 'bg-coral ring-4 ring-coral/20' : cat.dot}"></span>
+                      <span class="w-0.5 flex-1 bg-stone-200 dark:bg-stone-700 my-1"></span>
+                    </div>
+                    <div class="flex-1 p-3.5 rounded-2xl bg-[#F7F5F0] dark:bg-[#23262E] mb-1">
+                      <div class="flex items-center justify-between gap-2 mb-1">
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${cat.pill}">${cat.emoji} ${item.category}</span>
+                        ${isDeadline ? `
+                          <span class="text-[10px] font-extrabold text-coral">⏰ Deadline</span>
+                        ` : `
+                          <div class="flex items-center gap-1.5">
+                            <button onclick="openEditScheduleModal('${item.id}')" class="px-2 py-0.5 rounded-full bg-white dark:bg-stone-700 text-[10px] font-bold text-stone-600 dark:text-stone-200 hover:text-obsidian">✎ Edit</button>
+                            <button onclick="deleteScheduleById('${item.id}')" class="px-2 py-0.5 rounded-full bg-[#FDECE7] dark:bg-rose-950/70 text-[10px] font-bold text-coral">Hapus</button>
+                          </div>
+                        `}
+                      </div>
+                      <h4 class="text-sm font-display font-bold text-obsidian dark:text-white ${item.completed ? 'line-through opacity-60' : ''}">${escapeHtml(item.title)}</h4>
+                      <p class="text-xs text-stone-500 dark:text-stone-400 mt-0.5">${escapeHtml(item.subtitle)}</p>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * TAB 4: TRACKER MATERI PELAJARAN
+     * ============================================================================
+     */
+    function renderLessonsTab() {
+      return `
+        <div class="bg-white dark:bg-[#1C1E24] rounded-[28px] p-5 border border-stone-200/70 dark:border-stone-800 shadow-2xs space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-display font-extrabold text-obsidian dark:text-white">Tracker Materi Pelajaran</h2>
+              <p class="text-xs text-stone-400">Ketuk mata pelajaran untuk kelola bab & catatan ringkas</p>
+            </div>
+            <button onclick="openAddSubjectModal()" class="px-4 py-2 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-bold">
+              + Mapel
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            ${state.subjects.map(sub => {
+              const totalBab = sub.chapters.length;
+              const pahamBab = sub.chapters.filter(c => c.status === 'paham').length;
+              const pct = totalBab > 0 ? Math.round((pahamBab / totalBab) * 100) : 0;
+              const reviewBab = sub.chapters.find(c => c.status === 'review');
+
+              return `
+                <div onclick="openSubjectDetailModal('${sub.id}')" class="p-4 rounded-[24px] bg-[#F7F5F0] dark:bg-[#23262E] hover:bg-[#EFECE4] dark:hover:bg-[#2A2E38] transition cursor-pointer flex flex-col justify-between gap-3">
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <div class="w-11 h-11 rounded-full bg-[#E5DEC9] dark:bg-stone-700 flex items-center justify-center text-xl flex-shrink-0">
+                        ${sub.icon}
+                      </div>
+                      <div class="min-w-0">
+                        <h3 class="text-sm font-display font-extrabold text-obsidian dark:text-white truncate">${escapeHtml(sub.name)}</h3>
+                        <p class="text-[11px] text-stone-500 dark:text-stone-400 truncate">${escapeHtml(sub.teacher || 'Mata Pelajaran')}</p>
+                      </div>
+                    </div>
+                    <span class="text-sm font-display font-extrabold text-obsidian dark:text-solar">${pct}%</span>
+                  </div>
+
+                  <div class="flex items-center justify-between pt-2 border-t border-stone-200/70 dark:border-stone-700/70">
+                    <span class="text-[11px] font-semibold text-stone-500 dark:text-stone-400">
+                      Bab paham: <strong class="text-obsidian dark:text-white">${pahamBab}/${totalBab}</strong>
+                    </span>
+                    ${renderSegmentedPillBar(pahamBab, totalBab, 10)}
+                  </div>
+
+                  ${reviewBab ? `
+                    <div class="text-[11px] font-semibold text-coral bg-[#FDECE7] dark:bg-rose-950/50 px-3 py-1.5 rounded-xl truncate">
+                      ⚠️ Perlu review: ${escapeHtml(reviewBab.title)}
+                    </div>
+                  ` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * TASK, SCHEDULE & LESSON FULL CRUD MODALS
+     * ============================================================================
+     */
+    function toggleTaskDone(taskId, e) {
+      if (e) e.stopPropagation();
+      const t = state.tasks.find(x => x.id === taskId);
+      if (!t) return;
+      t.completed = !t.completed;
+      if (t.completed && t.subtasks.length > 0) {
+        t.subtasks.forEach(s => s.done = true);
+      }
+      renderApp();
+      triggerAutoSync();
+      showToast(t.completed ? `Selesai: ${t.title}` : 'Tugas dibuka kembali');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-root').innerHTML = '';
+    }
+
+    function openQuickAddModal(mode = 'task') {
+      const root = document.getElementById('modal-root');
+      root.innerHTML = `
+        <div onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-xs flex items-end md:items-center justify-center animate-fade-in p-0 md:p-4">
+          <div class="w-full max-w-md bg-white dark:bg-[#1C1E24] rounded-t-[30px] md:rounded-[30px] p-5 shadow-2xl border border-stone-200 dark:border-stone-800 max-h-[90vh] overflow-y-auto animate-slide-up">
+            <div class="w-10 h-1 bg-stone-300 dark:bg-stone-700 rounded-full mx-auto mb-4 md:hidden"></div>
+
+            <div class="grid grid-cols-3 gap-1.5 p-1 rounded-full bg-[#F3F1ED] dark:bg-stone-800 mb-4">
+              <button onclick="openQuickAddModal('task')" class="py-2 rounded-full text-xs font-bold transition ${mode === 'task' ? 'bg-obsidian dark:bg-solar text-solar dark:text-obsidian shadow-xs' : 'text-stone-500'}">+ Tugas</button>
+              <button onclick="openQuickAddModal('schedule')" class="py-2 rounded-full text-xs font-bold transition ${mode === 'schedule' ? 'bg-obsidian dark:bg-solar text-solar dark:text-obsidian shadow-xs' : 'text-stone-500'}">+ Jadwal</button>
+              <button onclick="openQuickAddModal('lesson')" class="py-2 rounded-full text-xs font-bold transition ${mode === 'lesson' ? 'bg-obsidian dark:bg-solar text-solar dark:text-obsidian shadow-xs' : 'text-stone-500'}">+ Bab Materi</button>
+            </div>
+
+            ${mode === 'task' ? `
+              <form onsubmit="saveNewTask(event)" class="space-y-3">
+                <div>
+                  <label class="block text-xs font-bold mb-1">Judul Tugas / Kegiatan</label>
+                  <input id="inp-task-title" type="text" required placeholder="Contoh: Rangkuman Kimia Bab 3..." class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                  <div>
+                    <label class="block text-xs font-bold mb-1">Kategori</label>
+                    <select id="inp-task-cat" class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                      <option value="Sekolah">📘 Sekolah</option>
+                      <option value="OSIS">🟠 OSIS</option>
+                      <option value="Project">🟡 Project</option>
+                      <option value="Rutin">🌿 Rutin</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold mb-1">Prioritas</label>
+                    <select id="inp-task-prio" class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                      <option value="Tinggi">🔥 Tinggi</option>
+                      <option value="Sedang" selected>⚡ Sedang</option>
+                      <option value="Rendah">🌿 Santai</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                  <div>
+                    <label class="block text-xs font-bold mb-1">Tanggal</label>
+                    <input id="inp-task-date" type="date" value="${TODAY_STR}" required class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold mb-1">Jam</label>
+                    <input id="inp-task-time" type="time" value="21:00" required class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">Pengingat Deadline</label>
+                  <select id="inp-task-reminder" class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                    <option value="15 menit sebelum">🔔 15 menit sebelum</option>
+                    <option value="1 jam sebelum" selected>🔔 1 jam sebelum</option>
+                    <option value="1 hari sebelum">🔔 1 hari sebelum</option>
+                    <option value="Tanpa pengingat">🔕 Tanpa pengingat</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">Pecah Jadi Langkah Kecil (Opsional, pisahkan koma)</label>
+                  <input id="inp-task-subs" type="text" placeholder="Contoh: Baca materi, Kerjakan soal 1-5, Cek ulang" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">Catatan</label>
+                  <textarea id="inp-task-notes" rows="2" placeholder="Detail pengumpulan atau info rapat..." class="w-full px-3.5 py-2 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm"></textarea>
+                </div>
+                <div class="flex gap-2 pt-2">
+                  <button type="button" onclick="closeModal()" class="flex-1 py-3 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-xs font-bold">Batal</button>
+                  <button type="submit" class="flex-[2] py-3 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-extrabold shadow-md">Simpan Tugas ✓</button>
+                </div>
+              </form>
+            ` : mode === 'schedule' ? `
+              <form onsubmit="saveNewSchedule(event)" class="space-y-3">
+                <div>
+                  <label class="block text-xs font-bold mb-1">Nama Agenda / Jadwal</label>
+                  <input id="inp-sch-title" type="text" required placeholder="Contoh: Rapat Divisi Acara OSIS..." class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                  <div>
+                    <label class="block text-xs font-bold mb-1">Kategori</label>
+                    <select id="inp-sch-cat" class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                      <option value="OSIS">🟠 OSIS</option>
+                      <option value="Sekolah">📘 Sekolah</option>
+                      <option value="Project">🟡 Project</option>
+                      <option value="Rutin">🌿 Rutin</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold mb-1">Tanggal</label>
+                    <input id="inp-sch-date" type="date" value="${state.selectedCalendarDate}" required class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                  <div>
+                    <label class="block text-xs font-bold mb-1">Mulai</label>
+                    <input id="inp-sch-start" type="time" value="15:30" required class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold mb-1">Selesai</label>
+                    <input id="inp-sch-end" type="time" value="17:00" required class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">Lokasi / Keterangan</label>
+                  <input id="inp-sch-loc" type="text" placeholder="Contoh: Ruang OSIS atau Aula" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                </div>
+                <div class="flex gap-2 pt-2">
+                  <button type="button" onclick="closeModal()" class="flex-1 py-3 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-xs font-bold">Batal</button>
+                  <button type="submit" class="flex-[2] py-3 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-extrabold shadow-md">Simpan Jadwal ✓</button>
+                </div>
+              </form>
+            ` : `
+              <form onsubmit="saveNewChapter(event)" class="space-y-3">
+                <div>
+                  <label class="block text-xs font-bold mb-1">Mata Pelajaran</label>
+                  <select id="inp-les-sub" class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                    ${state.subjects.map(s => `<option value="${s.id}">${s.icon} ${escapeHtml(s.name)}</option>`).join('')}
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">Judul Bab Materi</label>
+                  <input id="inp-les-title" type="text" required placeholder="Contoh: Bab 5: Turunan Fungsi" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">Status Pemahaman</label>
+                  <select id="inp-les-status" class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                    <option value="belum">⚪ Belum Dipelajari</option>
+                    <option value="review">🟡 Perlu Review</option>
+                    <option value="paham">🟢 Sudah Paham</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">Catatan Ringkas / Rumus</label>
+                  <textarea id="inp-les-note" rows="2" placeholder="Poin penting untuk persiapan ulangan..." class="w-full px-3.5 py-2 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm"></textarea>
+                </div>
+                <div class="flex gap-2 pt-2">
+                  <button type="button" onclick="closeModal()" class="flex-1 py-3 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-xs font-bold">Batal</button>
+                  <button type="submit" class="flex-[2] py-3 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-extrabold shadow-md">Simpan Materi ✓</button>
+                </div>
+              </form>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
+    function saveNewTask(e) {
+      e.preventDefault();
+      const title = document.getElementById('inp-task-title').value.trim();
+      const category = document.getElementById('inp-task-cat').value;
+      const priority = document.getElementById('inp-task-prio').value;
+      const deadlineDate = document.getElementById('inp-task-date').value;
+      const deadlineTime = document.getElementById('inp-task-time').value;
+      const reminder = document.getElementById('inp-task-reminder').value;
+      const subsRaw = document.getElementById('inp-task-subs').value;
+      const notes = document.getElementById('inp-task-notes').value.trim();
+
+      const subtasks = subsRaw
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean)
+        .map(text => ({ id: generateId('sub'), text, done: false }));
+
+      state.tasks.unshift({
+        id: generateId('t'),
+        title,
+        category,
+        priority,
+        deadlineDate,
+        deadlineTime,
+        reminder,
+        notes,
+        completed: false,
+        subtasks
+      });
+
+      closeModal();
+      renderApp();
+      triggerAutoSync();
+      showToast('Tugas baru ditambahkan!');
+    }
+
+    function openEditTaskModal(taskId) {
+      const task = state.tasks.find(t => t.id === taskId);
+      if (!task) return;
+      const root = document.getElementById('modal-root');
+      root.innerHTML = `
+        <div onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-xs flex items-end md:items-center justify-center animate-fade-in p-0 md:p-4">
+          <div class="w-full max-w-md bg-white dark:bg-[#1C1E24] rounded-t-[30px] md:rounded-[30px] p-5 shadow-2xl border border-stone-200 dark:border-stone-800 max-h-[90vh] overflow-y-auto animate-slide-up">
+            <h3 class="text-base font-display font-extrabold mb-3">✎ Edit Tugas</h3>
+            <form onsubmit="saveEditedTask(event, '${task.id}')" class="space-y-3">
+              <div>
+                <label class="block text-xs font-bold mb-1">Judul Tugas</label>
+                <input id="edit-task-title" type="text" required value="${escapeHtml(task.title)}" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+              </div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-xs font-bold mb-1">Kategori</label>
+                  <select id="edit-task-cat" class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                    ${['Sekolah', 'OSIS', 'Project', 'Rutin'].map(c => `<option value="${c}" ${task.category === c ? 'selected' : ''}>${CATEGORY_STYLES[c].emoji} ${c}</option>`).join('')}
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">Prioritas</label>
+                  <select id="edit-task-prio" class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                    <option value="Tinggi" ${task.priority === 'Tinggi' ? 'selected' : ''}>🔥 Tinggi</option>
+                    <option value="Sedang" ${task.priority === 'Sedang' ? 'selected' : ''}>⚡ Sedang</option>
+                    <option value="Rendah" ${task.priority === 'Rendah' ? 'selected' : ''}>🌿 Santai</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-xs font-bold mb-1">Tanggal</label>
+                  <input id="edit-task-date" type="date" value="${task.deadlineDate}" required class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">Jam</label>
+                  <input id="edit-task-time" type="time" value="${task.deadlineTime}" required class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold mb-1">Pengingat Deadline</label>
+                <select id="edit-task-reminder" class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                  ${['15 menit sebelum', '1 jam sebelum', '1 hari sebelum', 'Tanpa pengingat'].map(r => `<option value="${r}" ${task.reminder === r ? 'selected' : ''}>${r}</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold mb-1">Catatan</label>
+                <textarea id="edit-task-notes" rows="2" class="w-full px-3.5 py-2 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">${escapeHtml(task.notes || '')}</textarea>
+              </div>
+              <div class="flex gap-2 pt-2">
+                <button type="button" onclick="openTaskDetailModal('${task.id}')" class="flex-1 py-2.5 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-xs font-bold">Batal</button>
+                <button type="submit" class="flex-[2] py-2.5 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-extrabold">Simpan Perubahan ✓</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveEditedTask(e, taskId) {
+      e.preventDefault();
+      const task = state.tasks.find(t => t.id === taskId);
+      if (!task) return;
+      task.title = document.getElementById('edit-task-title').value.trim();
+      task.category = document.getElementById('edit-task-cat').value;
+      task.priority = document.getElementById('edit-task-prio').value;
+      task.deadlineDate = document.getElementById('edit-task-date').value;
+      task.deadlineTime = document.getElementById('edit-task-time').value;
+      task.reminder = document.getElementById('edit-task-reminder').value;
+      task.notes = document.getElementById('edit-task-notes').value.trim();
+
+      renderApp();
+      triggerAutoSync();
+      openTaskDetailModal(taskId);
+      showToast('Perubahan tugas disimpan!');
+    }
+
+    function saveNewSchedule(e) {
+      e.preventDefault();
+      const title = document.getElementById('inp-sch-title').value.trim();
+      const category = document.getElementById('inp-sch-cat').value;
+      const date = document.getElementById('inp-sch-date').value;
+      const startTime = document.getElementById('inp-sch-start').value;
+      const endTime = document.getElementById('inp-sch-end').value;
+      const location = document.getElementById('inp-sch-loc').value.trim() || 'Terjadwal';
+
+      state.schedules.push({ id: generateId('sch'), title, category, date, startTime, endTime, location });
+      selectCalendarDay(date);
+      closeModal();
+      triggerAutoSync();
+      showToast('Jadwal berhasil dicatat!');
+    }
+
+    function openEditScheduleModal(schId) {
+      const sch = state.schedules.find(s => s.id === schId);
+      if (!sch) return;
+      const root = document.getElementById('modal-root');
+      root.innerHTML = `
+        <div onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-xs flex items-end md:items-center justify-center animate-fade-in p-0 md:p-4">
+          <div class="w-full max-w-md bg-white dark:bg-[#1C1E24] rounded-t-[30px] md:rounded-[30px] p-5 shadow-2xl border border-stone-200 dark:border-stone-800 animate-slide-up">
+            <h3 class="text-base font-display font-extrabold mb-3">✎ Edit Jadwal Kegiatan</h3>
+            <form onsubmit="saveEditedSchedule(event, '${sch.id}')" class="space-y-3">
+              <div>
+                <label class="block text-xs font-bold mb-1">Nama Agenda</label>
+                <input id="edit-sch-title" type="text" required value="${escapeHtml(sch.title)}" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+              </div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-xs font-bold mb-1">Kategori</label>
+                  <select id="edit-sch-cat" class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                    ${['OSIS', 'Sekolah', 'Project', 'Rutin'].map(c => `<option value="${c}" ${sch.category === c ? 'selected' : ''}>${CATEGORY_STYLES[c].emoji} ${c}</option>`).join('')}
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">Tanggal</label>
+                  <input id="edit-sch-date" type="date" value="${sch.date}" required class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-xs font-bold mb-1">Mulai</label>
+                  <input id="edit-sch-start" type="time" value="${sch.startTime}" required class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1">Selesai</label>
+                  <input id="edit-sch-end" type="time" value="${sch.endTime}" required class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold mb-1">Lokasi / Keterangan</label>
+                <input id="edit-sch-loc" type="text" value="${escapeHtml(sch.location || '')}" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+              </div>
+              <div class="flex gap-2 pt-2">
+                <button type="button" onclick="closeModal()" class="flex-1 py-2.5 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-xs font-bold">Batal</button>
+                <button type="submit" class="flex-[2] py-2.5 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-extrabold">Simpan Perubahan ✓</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveEditedSchedule(e, schId) {
+      e.preventDefault();
+      const sch = state.schedules.find(s => s.id === schId);
+      if (!sch) return;
+      sch.title = document.getElementById('edit-sch-title').value.trim();
+      sch.category = document.getElementById('edit-sch-cat').value;
+      sch.date = document.getElementById('edit-sch-date').value;
+      sch.startTime = document.getElementById('edit-sch-start').value;
+      sch.endTime = document.getElementById('edit-sch-end').value;
+      sch.location = document.getElementById('edit-sch-loc').value.trim() || 'Terjadwal';
+      selectCalendarDay(sch.date);
+      closeModal();
+      triggerAutoSync();
+      showToast('Jadwal berhasil diperbarui!');
+    }
+
+    function deleteScheduleById(schId) {
+      state.schedules = state.schedules.filter(s => s.id !== schId);
+      renderApp();
+      triggerAutoSync();
+      showToast('Jadwal dihapus');
+    }
+
+    function saveNewChapter(e) {
+      e.preventDefault();
+      const subId = document.getElementById('inp-les-sub').value;
+      const title = document.getElementById('inp-les-title').value.trim();
+      const status = document.getElementById('inp-les-status').value;
+      const note = document.getElementById('inp-les-note').value.trim();
+
+      const sub = state.subjects.find(s => s.id === subId);
+      if (sub) {
+        sub.chapters.push({ id: generateId('c'), title, status, note });
+      }
+      closeModal();
+      switchTab('lessons');
+      triggerAutoSync();
+      showToast('Bab materi baru disimpan!');
+    }
+
+    // Task Detail & Subtasks Modal (with Edit Task & Delete Subtask)
+    function openTaskDetailModal(taskId, confirmDel = false) {
+      const task = state.tasks.find(t => t.id === taskId);
+      if (!task) return;
+      const cat = CATEGORY_STYLES[task.category] || CATEGORY_STYLES['Sekolah'];
+      const subDone = task.subtasks.filter(s => s.done).length;
+      const subTotal = task.subtasks.length;
+
+      const root = document.getElementById('modal-root');
+      root.innerHTML = `
+        <div onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-xs flex items-end md:items-center justify-center animate-fade-in p-0 md:p-4">
+          <div class="w-full max-w-md bg-white dark:bg-[#1C1E24] rounded-t-[30px] md:rounded-[30px] p-5 shadow-2xl border border-stone-200 dark:border-stone-800 max-h-[90vh] overflow-y-auto animate-slide-up">
+            <div class="flex items-center justify-between mb-3">
+              <button onclick="closeModal()" class="text-xs font-bold text-stone-500 hover:text-obsidian dark:hover:text-white">&larr; Tutup</button>
+              <div class="flex items-center gap-2">
+                ${confirmDel ? `
+                  <button onclick="deleteTaskById('${task.id}')" class="px-3 py-1 rounded-full bg-coral text-white text-xs font-bold">Ya, Hapus</button>
+                  <button onclick="openTaskDetailModal('${task.id}', false)" class="px-3 py-1 rounded-full bg-stone-200 dark:bg-stone-700 text-xs font-bold">Batal</button>
+                ` : `
+                  <button onclick="openEditTaskModal('${task.id}')" class="px-3 py-1 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-obsidian dark:text-white text-xs font-bold">✎ Edit</button>
+                  <button onclick="openTaskDetailModal('${task.id}', true)" class="px-3 py-1 rounded-full bg-[#FDECE7] dark:bg-rose-950/60 text-coral text-xs font-bold">Hapus</button>
+                `}
+              </div>
+            </div>
+
+            <span class="inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full ${cat.pill} mb-2">${cat.emoji} ${task.category}</span>
+            <h2 class="text-lg font-display font-extrabold text-obsidian dark:text-white mb-1.5">${escapeHtml(task.title)}</h2>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mb-3">📅 ${formatIndoDate(task.deadlineDate)}, ${task.deadlineTime} WIB • 🔔 ${escapeHtml(task.reminder || '1 jam sebelum')}</p>
+
+            ${task.notes ? `
+              <div class="p-3 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800/70 text-xs text-stone-700 dark:text-stone-300 mb-4">
+                📝 ${escapeHtml(task.notes)}
+              </div>
+            ` : ''}
+
+            <div class="mb-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-stone-400">Langkah Kerja (${subDone}/${subTotal})</span>
+                ${subTotal > 0 ? renderSegmentedPillBar(subDone, subTotal, Math.min(subTotal, 8)) : ''}
+              </div>
+
+              <div class="space-y-2 mb-3">
+                ${task.subtasks.length === 0 ? `<p class="text-xs text-stone-400 italic">Belum ada subtask.</p>` : task.subtasks.map(sub => `
+                  <div class="flex items-center justify-between gap-2 p-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800">
+                    <button onclick="toggleSubtask('${task.id}', '${sub.id}')" class="flex items-center gap-2.5 flex-1 text-left">
+                      <span class="w-5 h-5 rounded-full border flex items-center justify-center text-xs ${sub.done ? 'bg-obsidian dark:bg-solar border-obsidian dark:border-solar text-solar dark:text-obsidian font-bold' : 'border-stone-300 dark:border-stone-600'}">
+                        ${sub.done ? '✓' : ''}
+                      </span>
+                      <span class="text-xs font-medium ${sub.done ? 'line-through text-stone-400' : 'text-obsidian dark:text-stone-200'}">${escapeHtml(sub.text)}</span>
+                    </button>
+                    <button onclick="deleteSubtask('${task.id}', '${sub.id}')" aria-label="Hapus Subtask" class="w-6 h-6 rounded-full text-stone-400 hover:text-coral hover:bg-stone-200/70 dark:hover:bg-stone-700 flex items-center justify-center text-xs font-bold">×</button>
+                  </div>
+                `).join('')}
+              </div>
+
+              <div class="flex gap-2">
+                <input id="modal-sub-inp" type="text" onkeydown="if(event.key==='Enter'){event.preventDefault();addSubtask('${task.id}');}" placeholder="+ Tambah langkah baru..." class="flex-1 px-3.5 py-2 rounded-full bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-xs" />
+                <button onclick="addSubtask('${task.id}')" class="px-4 py-2 rounded-full bg-obsidian dark:bg-stone-700 text-white text-xs font-bold">Tambah</button>
+              </div>
+            </div>
+
+            <button onclick="toggleTaskDone('${task.id}'); closeModal();" class="w-full py-3 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-extrabold shadow-md">
+              ${task.completed ? '↩️ Buka Kembali Tugas' : '✓ Tandai Tugas Selesai'}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleSubtask(taskId, subId) {
+      const t = state.tasks.find(x => x.id === taskId);
+      if (!t) return;
+      const s = t.subtasks.find(x => x.id === subId);
+      if (!s) return;
+      s.done = !s.done;
+      if (t.subtasks.length > 0 && t.subtasks.every(x => x.done)) {
+        t.completed = true;
+      } else {
+        t.completed = false;
+      }
+      renderApp();
+      triggerAutoSync();
+      openTaskDetailModal(taskId);
+    }
+
+    function addSubtask(taskId) {
+      const inp = document.getElementById('modal-sub-inp');
+      if (!inp || !inp.value.trim()) return;
+      const t = state.tasks.find(x => x.id === taskId);
+      if (!t) return;
+      t.subtasks.push({ id: generateId('s'), text: inp.value.trim(), done: false });
+      t.completed = false;
+      renderApp();
+      triggerAutoSync();
+      openTaskDetailModal(taskId);
+    }
+
+    function deleteSubtask(taskId, subId) {
+      const t = state.tasks.find(x => x.id === taskId);
+      if (!t) return;
+      t.subtasks = t.subtasks.filter(s => s.id !== subId);
+      renderApp();
+      triggerAutoSync();
+      openTaskDetailModal(taskId);
+    }
+
+    function deleteTaskById(taskId) {
+      state.tasks = state.tasks.filter(t => t.id !== taskId);
+      closeModal();
+      renderApp();
+      triggerAutoSync();
+      showToast('Tugas dihapus');
+    }
+
+    // Subject Detail Modal (with Edit Subject, Delete Subject, Edit Chapter & Delete Chapter)
+    function openSubjectDetailModal(subId, confirmDelSub = false) {
+      const sub = state.subjects.find(s => s.id === subId);
+      if (!sub) return;
+      const statusLabels = {
+        belum: { text: '⚪ Belum', cls: 'bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300' },
+        review: { text: '🟡 Perlu Review', cls: 'bg-[#FEF6D8] dark:bg-amber-950 text-[#8F6B00] dark:text-amber-300' },
+        paham: { text: '🟢 Paham', cls: 'bg-[#E7F2EC] dark:bg-emerald-950 text-[#256343] dark:text-emerald-300' }
+      };
+
+      const root = document.getElementById('modal-root');
+      root.innerHTML = `
+        <div onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-xs flex items-end md:items-center justify-center animate-fade-in p-0 md:p-4">
+          <div class="w-full max-w-md bg-white dark:bg-[#1C1E24] rounded-t-[30px] md:rounded-[30px] p-5 shadow-2xl border border-stone-200 dark:border-stone-800 max-h-[90vh] overflow-y-auto animate-slide-up">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="text-2xl">${sub.icon}</span>
+                <div class="min-w-0">
+                  <h3 class="text-base font-display font-extrabold text-obsidian dark:text-white truncate">${escapeHtml(sub.name)}</h3>
+                  <p class="text-[11px] text-stone-400 truncate">${escapeHtml(sub.teacher || 'Ketuk status untuk mengubah progres')}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                ${confirmDelSub ? `
+                  <button onclick="deleteSubjectById('${sub.id}')" class="px-2.5 py-1 rounded-full bg-coral text-white text-[11px] font-bold">Hapus Mapel</button>
+                  <button onclick="openSubjectDetailModal('${sub.id}', false)" class="px-2.5 py-1 rounded-full bg-stone-200 dark:bg-stone-700 text-[11px] font-bold">Batal</button>
+                ` : `
+                  <button onclick="openEditSubjectModal('${sub.id}')" class="px-2.5 py-1 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-[11px] font-bold">✎</button>
+                  <button onclick="openSubjectDetailModal('${sub.id}', true)" class="px-2.5 py-1 rounded-full bg-[#FDECE7] dark:bg-rose-950/60 text-coral text-[11px] font-bold">🗑️</button>
+                  <button onclick="closeModal()" class="px-2.5 py-1 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-[11px] font-bold">Tutup</button>
+                `}
+              </div>
+            </div>
+
+            <div class="space-y-2.5 mb-4">
+              ${sub.chapters.length === 0 ? `<p class="text-xs text-stone-400 italic py-2">Belum ada bab terdaftar di mapel ini.</p>` : sub.chapters.map(c => {
+                const st = statusLabels[c.status] || statusLabels.belum;
+                return `
+                  <div class="p-3.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800">
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                      <h4 class="text-xs font-bold text-obsidian dark:text-white flex-1">${escapeHtml(c.title)}</h4>
+                      <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button onclick="cycleChapter('${sub.id}', '${c.id}')" class="px-2.5 py-1 rounded-full text-[10px] font-bold ${st.cls}">
+                          ${st.text}
+                        </button>
+                        <button onclick="openEditChapterModal('${sub.id}', '${c.id}')" title="Edit Bab & Catatan" class="w-6 h-6 rounded-full bg-white dark:bg-stone-700 text-[10px] font-bold flex items-center justify-center">✎</button>
+                      </div>
+                    </div>
+                    ${c.note ? `<p class="text-[11px] text-stone-500 dark:text-stone-300 mt-1">📝 ${escapeHtml(c.note)}</p>` : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <form onsubmit="addChapterInline(event, '${sub.id}')" class="space-y-2 pt-3 border-t border-stone-200 dark:border-stone-800">
+              <input id="inline-ch-title" type="text" required placeholder="+ Tambah judul bab baru..." class="w-full px-3.5 py-2 rounded-full bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-xs" />
+              <div class="flex gap-2">
+                <input id="inline-ch-note" type="text" placeholder="Catatan singkat / rumus..." class="flex-1 px-3.5 py-2 rounded-full bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-xs" />
+                <button type="submit" class="px-4 py-2 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-bold">Simpan</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+    }
+
+    function openEditSubjectModal(subId) {
+      const sub = state.subjects.find(s => s.id === subId);
+      if (!sub) return;
+      const root = document.getElementById('modal-root');
+      root.innerHTML = `
+        <div onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-xs flex items-end md:items-center justify-center animate-fade-in p-0 md:p-4">
+          <div class="w-full max-w-md bg-white dark:bg-[#1C1E24] rounded-t-[30px] md:rounded-[30px] p-5 shadow-2xl border border-stone-200 dark:border-stone-800 animate-slide-up">
+            <h3 class="text-base font-display font-extrabold mb-3">✎ Edit Mata Pelajaran</h3>
+            <form onsubmit="saveEditedSubject(event, '${sub.id}')" class="space-y-3">
+              <input id="edit-sub-name" type="text" required value="${escapeHtml(sub.name)}" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+              <input id="edit-sub-teacher" type="text" value="${escapeHtml(sub.teacher || '')}" placeholder="Keterangan guru / kelas" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+              <select id="edit-sub-icon" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                ${['📐', '⚡', '💻', '🏛️', '🧪', '🧬', '🗣️', '📊', '📚'].map(ic => `<option value="${ic}" ${sub.icon === ic ? 'selected' : ''}>${ic} Ikon Mapel</option>`).join('')}
+              </select>
+              <div class="flex gap-2 pt-2">
+                <button type="button" onclick="openSubjectDetailModal('${sub.id}')" class="flex-1 py-2.5 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-xs font-bold">Batal</button>
+                <button type="submit" class="flex-[2] py-2.5 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-extrabold">Simpan ✓</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveEditedSubject(e, subId) {
+      e.preventDefault();
+      const sub = state.subjects.find(s => s.id === subId);
+      if (!sub) return;
+      sub.name = document.getElementById('edit-sub-name').value.trim();
+      sub.teacher = document.getElementById('edit-sub-teacher').value.trim();
+      sub.icon = document.getElementById('edit-sub-icon').value;
+      renderApp();
+      triggerAutoSync();
+      openSubjectDetailModal(subId);
+      showToast('Info mapel diperbarui!');
+    }
+
+    function deleteSubjectById(subId) {
+      state.subjects = state.subjects.filter(s => s.id !== subId);
+      closeModal();
+      renderApp();
+      triggerAutoSync();
+      showToast('Mata pelajaran dihapus');
+    }
+
+    function openEditChapterModal(subId, chapId) {
+      const sub = state.subjects.find(s => s.id === subId);
+      if (!sub) return;
+      const chap = sub.chapters.find(c => c.id === chapId);
+      if (!chap) return;
+
+      const root = document.getElementById('modal-root');
+      root.innerHTML = `
+        <div onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-xs flex items-end md:items-center justify-center animate-fade-in p-0 md:p-4">
+          <div class="w-full max-w-md bg-white dark:bg-[#1C1E24] rounded-t-[30px] md:rounded-[30px] p-5 shadow-2xl border border-stone-200 dark:border-stone-800 animate-slide-up">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-display font-extrabold">✎ Edit Bab & Catatan</h3>
+              <button onclick="deleteChapterById('${sub.id}', '${chap.id}')" class="px-3 py-1 rounded-full bg-[#FDECE7] dark:bg-rose-950/60 text-coral text-xs font-bold">Hapus Bab</button>
+            </div>
+            <form onsubmit="saveEditedChapter(event, '${sub.id}', '${chap.id}')" class="space-y-3">
+              <div>
+                <label class="block text-xs font-bold mb-1">Judul Bab</label>
+                <input id="edit-ch-title" type="text" required value="${escapeHtml(chap.title)}" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold mb-1">Status Pemahaman</label>
+                <select id="edit-ch-status" class="w-full px-3 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                  <option value="belum" ${chap.status === 'belum' ? 'selected' : ''}>⚪ Belum Dipelajari</option>
+                  <option value="review" ${chap.status === 'review' ? 'selected' : ''}>🟡 Perlu Review</option>
+                  <option value="paham" ${chap.status === 'paham' ? 'selected' : ''}>🟢 Sudah Paham</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold mb-1">Catatan Ringkas / Rumus</label>
+                <textarea id="edit-ch-note" rows="3" class="w-full px-3.5 py-2 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">${escapeHtml(chap.note || '')}</textarea>
+              </div>
+              <div class="flex gap-2 pt-2">
+                <button type="button" onclick="openSubjectDetailModal('${sub.id}')" class="flex-1 py-2.5 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-xs font-bold">Batal</button>
+                <button type="submit" class="flex-[2] py-2.5 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-extrabold">Simpan ✓</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveEditedChapter(e, subId, chapId) {
+      e.preventDefault();
+      const sub = state.subjects.find(s => s.id === subId);
+      if (!sub) return;
+      const chap = sub.chapters.find(c => c.id === chapId);
+      if (!chap) return;
+      chap.title = document.getElementById('edit-ch-title').value.trim();
+      chap.status = document.getElementById('edit-ch-status').value;
+      chap.note = document.getElementById('edit-ch-note').value.trim();
+      renderApp();
+      triggerAutoSync();
+      openSubjectDetailModal(subId);
+      showToast('Bab materi diperbarui!');
+    }
+
+    function deleteChapterById(subId, chapId) {
+      const sub = state.subjects.find(s => s.id === subId);
+      if (!sub) return;
+      sub.chapters = sub.chapters.filter(c => c.id !== chapId);
+      renderApp();
+      triggerAutoSync();
+      openSubjectDetailModal(subId);
+      showToast('Bab dihapus');
+    }
+
+    function cycleChapter(subId, chapId) {
+      const sub = state.subjects.find(s => s.id === subId);
+      if (!sub) return;
+      const chap = sub.chapters.find(c => c.id === chapId);
+      if (!chap) return;
+      const order = ['belum', 'review', 'paham'];
+      chap.status = order[(order.indexOf(chap.status) + 1) % order.length];
+      renderApp();
+      triggerAutoSync();
+      openSubjectDetailModal(subId);
+    }
+
+    function addChapterInline(e, subId) {
+      e.preventDefault();
+      const t = document.getElementById('inline-ch-title').value.trim();
+      const n = document.getElementById('inline-ch-note').value.trim();
+      if (!t) return;
+      const sub = state.subjects.find(s => s.id === subId);
+      if (sub) sub.chapters.push({ id: generateId('c'), title: t, status: 'belum', note: n });
+      renderApp();
+      triggerAutoSync();
+      openSubjectDetailModal(subId);
+    }
+
+    function openAddSubjectModal() {
+      const root = document.getElementById('modal-root');
+      root.innerHTML = `
+        <div onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-xs flex items-end md:items-center justify-center animate-fade-in p-0 md:p-4">
+          <div class="w-full max-w-md bg-white dark:bg-[#1C1E24] rounded-t-[30px] md:rounded-[30px] p-5 shadow-2xl border border-stone-200 dark:border-stone-800 animate-slide-up">
+            <h3 class="text-base font-display font-extrabold mb-3">Tambah Mata Pelajaran</h3>
+            <form onsubmit="createSubject(event)" class="space-y-3">
+              <input id="sub-name" type="text" required placeholder="Nama Mata Pelajaran (mis. Kimia)" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+              <input id="sub-teacher" type="text" placeholder="Keterangan (mis. Guru: Bu Rina • Kelas XI)" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm" />
+              <select id="sub-icon" class="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm">
+                <option value="🧪">🧪 Kimia / Sains</option>
+                <option value="🧬">🧬 Biologi</option>
+                <option value="🗣️">🗣️ Bahasa Inggris / Indonesia</option>
+                <option value="📊">📊 Ekonomi</option>
+                <option value="📚">📚 Mata Pelajaran Umum</option>
+              </select>
+              <div class="flex gap-2 pt-2">
+                <button type="button" onclick="closeModal()" class="flex-1 py-2.5 rounded-full bg-[#F3F1ED] dark:bg-stone-800 text-xs font-bold">Batal</button>
+                <button type="submit" class="flex-[2] py-2.5 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-extrabold">Tambah Mapel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+    }
+
+    function createSubject(e) {
+      e.preventDefault();
+      const name = document.getElementById('sub-name').value.trim();
+      const teacher = document.getElementById('sub-teacher').value.trim();
+      const icon = document.getElementById('sub-icon').value;
+      if (!name) return;
+      state.subjects.push({ id: generateId('sub'), name, teacher, icon, chapters: [] });
+      closeModal();
+      renderApp();
+      triggerAutoSync();
+      showToast(`Mapel ${name} ditambahkan!`);
+    }
+
+    /**
+     * ============================================================================
+     * REMINDERS & WEB NOTIFICATION API
+     * ============================================================================
+     */
+    function requestBrowserNotifications() {
+      if (typeof Notification === 'undefined') {
+        showToast('Browser ini tidak mendukung notifikasi sistem', 'error');
+        return;
+      }
+      try {
+        Notification.requestPermission().then(perm => {
+          if (perm === 'granted') {
+            showToast('Notifikasi pengingat diaktifkan!');
+            openRemindersModal();
+          } else {
+            showToast('Izin notifikasi ditolak browser', 'error');
+          }
+        });
+      } catch (e) {
+        showToast('Notifikasi dibatasi oleh mode preview', 'error');
+      }
+    }
+
+    function checkUpcomingDeadlines() {
+      const now = new Date();
+      state.tasks.forEach(t => {
+        if (t.completed || !t.reminder || t.reminder === 'Tanpa pengingat') return;
+        if (state.notifiedTaskIds.includes(t.id)) return;
+
+        const [y, m, d] = t.deadlineDate.split('-').map(Number);
+        const [hh, mm] = t.deadlineTime.split(':').map(Number);
+        const due = new Date(y, m - 1, d, hh, mm);
+        const diffMinutes = (due - now) / 60000;
+
+        let threshold = 60;
+        if (t.reminder === '15 menit sebelum') threshold = 15;
+        else if (t.reminder === '1 hari sebelum') threshold = 1440;
+
+        if (diffMinutes > 0 && diffMinutes <= threshold) {
+          state.notifiedTaskIds.push(t.id);
+          showToast(`⏰ Pengingat: ${t.title} (${t.deadlineTime})`);
+          if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+            try {
+              new Notification(`Deadline ${t.category}: ${t.title}`, {
+                body: `Tenggat pukul ${t.deadlineTime} (${formatIndoDate(t.deadlineDate)})`
+              });
+            } catch (e) {}
+          }
+        }
+      });
+    }
+
+    function openRemindersModal() {
+      const urgent = state.tasks.filter(t => !t.completed);
+      const notifSupported = typeof Notification !== 'undefined';
+      const notifGranted = notifSupported && Notification.permission === 'granted';
+
+      const root = document.getElementById('modal-root');
+      root.innerHTML = `
+        <div onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-xs flex items-end md:items-center justify-center animate-fade-in p-0 md:p-4">
+          <div class="w-full max-w-md bg-white dark:bg-[#1C1E24] rounded-t-[30px] md:rounded-[30px] p-5 shadow-2xl border border-stone-200 dark:border-stone-800 animate-slide-up">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-display font-extrabold">🔔 Pengingat Tenggat Waktu</h3>
+              <button onclick="closeModal()" class="text-xs font-bold text-stone-400">Tutup</button>
+            </div>
+
+            ${notifSupported && !notifGranted ? `
+              <button onclick="requestBrowserNotifications()" class="w-full mb-3 py-2.5 px-4 rounded-2xl bg-[#FEF6D8] dark:bg-amber-950/60 text-[#8F6B00] dark:text-amber-300 text-xs font-bold flex items-center justify-between">
+                <span>🔔 Aktifkan Notifikasi Pengingat HP</span>
+                <span>Izinkan &rsaquo;</span>
+              </button>
+            ` : notifGranted ? `
+              <div class="mb-3 py-2 px-3 rounded-2xl bg-[#E7F2EC] dark:bg-emerald-950/50 text-[#256343] dark:text-emerald-300 text-[11px] font-bold">
+                ✅ Notifikasi Pengingat Browser Aktif
+              </div>
+            ` : ''}
+
+            <div class="space-y-2 max-h-72 overflow-y-auto">
+              ${urgent.length === 0 ? `<p class="text-xs text-stone-400 text-center py-4">Semua tugas sudah selesai!</p>` : urgent.map(t => `
+                <div onclick="openTaskDetailModal('${t.id}')" class="p-3 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 cursor-pointer">
+                  <div class="flex justify-between text-[11px] font-bold text-coral mb-0.5">
+                    <span>${t.category} • ${t.reminder || '1 jam sebelum'}</span>
+                    <span>${formatIndoDate(t.deadlineDate)} ${t.deadlineTime}</span>
+                  </div>
+                  <p class="text-xs font-bold text-obsidian dark:text-white">${escapeHtml(t.title)}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * CLOUD SYNC MODAL (GITHUB GIST API + MANUAL JSON FALLBACK)
+     * ============================================================================
+     */
+    function openCloudSyncModal() {
+      const jsonStr = JSON.stringify(buildSerializableData(), null, 2);
+      const root = document.getElementById('modal-root');
+      root.innerHTML = `
+        <div onclick="if(event.target === this) closeModal()" class="fixed inset-0 z-40 bg-obsidian/60 backdrop-blur-xs flex items-end md:items-center justify-center animate-fade-in p-0 md:p-4">
+          <div class="w-full max-w-md bg-white dark:bg-[#1C1E24] rounded-t-[30px] md:rounded-[30px] p-5 shadow-2xl border border-stone-200 dark:border-stone-800 max-h-[90vh] overflow-y-auto animate-slide-up">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-base font-display font-extrabold">☁️ Cloud Sync (GitHub Gist API)</h3>
+              <button onclick="closeModal()" class="text-xs font-bold text-stone-400">Tutup</button>
+            </div>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mb-3">
+              Simpan data langsung ke <strong>Secret Gist</strong> akun GitHub-mu agar aman saat di-deploy di GitHub Pages (tanpa penyimpanan lokal browser).
+            </p>
+
+            ${state.gist.lastError ? `
+              <div class="p-2.5 rounded-xl bg-[#FDECE7] dark:bg-rose-950/60 text-coral text-[11px] font-bold mb-3">
+                ⚠️ ${escapeHtml(state.gist.lastError)}
+              </div>
+            ` : ''}
+
+            <div class="space-y-2.5 mb-4">
+              <div>
+                <label class="block text-[11px] font-bold mb-1">GitHub Personal Access Token (scope: <code>gist</code>)</label>
+                <input id="gist-token-input" type="password" value="${escapeHtml(state.gist.token)}" oninput="state.gist.token = this.value" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full px-3.5 py-2 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 font-mono text-xs" />
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-[11px] font-bold">Gist ID (Kosongkan untuk buat Gist baru)</label>
+                  ${state.gist.gistId ? `<button type="button" onclick="copyGistBookmarkUrl()" class="text-[10px] font-bold text-slateTeal dark:text-solar underline">Salin Link Bookmark</button>` : ''}
+                </div>
+                <input id="gist-id-input" type="text" value="${escapeHtml(state.gist.gistId)}" oninput="state.gist.gistId = this.value" placeholder="Otomatis terisi setelah simpan pertama..." class="w-full px-3.5 py-2 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 font-mono text-xs" />
+              </div>
+
+              <label class="flex items-center gap-2 text-xs font-semibold pt-1 cursor-pointer">
+                <input type="checkbox" ${state.gist.autoSync ? 'checked' : ''} onchange="state.gist.autoSync = this.checked" class="rounded accent-obsidian" />
+                <span>Otomatis simpan ke Gist setiap ada perubahan</span>
+              </label>
+
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button type="button" onclick="syncPushToGist(true)" class="py-2.5 rounded-full bg-obsidian dark:bg-solar text-white dark:text-obsidian text-xs font-extrabold shadow-sm">
+                  ⬆️ Simpan ke Gist
+                </button>
+                <button type="button" onclick="syncPullFromGist(true)" class="py-2.5 rounded-full bg-[#E6EEF2] dark:bg-stone-700 text-[#2E5063] dark:text-white text-xs font-extrabold">
+                  ⬇️ Tarik dari Gist
+                </button>
+              </div>
+            </div>
+
+            <details class="pt-3 border-t border-stone-200 dark:border-stone-800 text-xs">
+              <summary class="font-bold cursor-pointer text-stone-500 hover:text-obsidian dark:hover:text-white">
+                Cadangan JSON Manual (Opsional)
+              </summary>
+              <div class="mt-2.5 space-y-2">
+                <textarea id="json-box" rows="4" class="w-full p-3 rounded-2xl bg-[#F7F5F0] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 font-mono text-[10px]">${escapeHtml(jsonStr)}</textarea>
+                <div class="grid grid-cols-2 gap-2">
+                  <button type="button" onclick="copyJson()" class="py-2 rounded-full bg-stone-200 dark:bg-stone-700 text-xs font-bold">Salin JSON</button>
+                  <button type="button" onclick="restoreJson()" class="py-2 rounded-full bg-solar text-obsidian text-xs font-extrabold">Muat JSON</button>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+      `;
+    }
+
+    function copyGistBookmarkUrl() {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('gist_id', state.gist.gistId.trim());
+        const temp = document.createElement('textarea');
+        temp.value = url.toString();
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        temp.remove();
+        showToast('Link URL dengan Gist ID disalin!');
+      } catch (e) {
+        showToast('Gist ID: ' + state.gist.gistId);
+      }
+    }
+
+    function copyJson() {
+      const box = document.getElementById('json-box');
+      if (!box) return;
+      box.select();
+      document.execCommand('copy');
+      showToast('Data JSON berhasil disalin!');
+    }
+
+    function restoreJson() {
+      const box = document.getElementById('json-box');
+      if (!box) return;
+      try {
+        const data = JSON.parse(box.value);
+        applyImportedData(data);
+        closeModal();
+        renderApp();
+        triggerAutoSync();
+        showToast('Data berhasil dipulihkan!');
+      } catch (e) {
+        showToast('Format JSON tidak valid!', 'error');
+      }
+    }
+
+    /**
+     * ============================================================================
+     * RENDER CONTROLLER & STARTUP
+     * ============================================================================
+     */
+    function renderApp() {
+      updateSyncIndicators();
+      const main = document.getElementById('main-content');
+      if (!main) return;
+      if (state.currentTab === 'today') main.innerHTML = renderDashboardTab();
+      else if (state.currentTab === 'tasks') main.innerHTML = renderTasksTab();
+      else if (state.currentTab === 'calendar') main.innerHTML = renderCalendarTab();
+      else if (state.currentTab === 'lessons') main.innerHTML = renderLessonsTab();
+    }
+
+    window.onload = function () {
+      switchTab('today');
+      checkUpcomingDeadlines();
+      setInterval(checkUpcomingDeadlines, 30000);
+
+      // If opened with ?gist_id=... in URL, attempt initial pull automatically
+      if (state.gist.gistId) {
+        syncPullFromGist(false);
+      }
+    };
+  </script>
+</body>
+</html>
